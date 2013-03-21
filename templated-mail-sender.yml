@@ -1,0 +1,23 @@
+# Where to find message template
+emailTemplateBaseDir: /path/to/templates
+
+# Message queue configuration for receiving email requests
+queueName: templated_email
+errorQueueName: templated_email_error
+numQueueConsumers: 1
+
+kestrel:
+  properties:
+    kestrelHosts: kestrel:22133
+    kestrelReconnectIntervalInMinutes: 20
+    kestrelConnectionPoolSize: 1
+
+# Mail delivery configuration
+mailSenderClass: SmtpMailSender
+
+mailSenderConfig:
+  smtpHost: smtp.sendgrid.net
+  smtpPort: 587
+  smtpUser: cobbzilla
+  smtpPassword: password
+

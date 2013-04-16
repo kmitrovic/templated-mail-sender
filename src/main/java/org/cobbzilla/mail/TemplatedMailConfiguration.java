@@ -1,6 +1,9 @@
 package org.cobbzilla.mail;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+import org.cobbzilla.mail.sender.SmtpMailConfig;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -11,46 +14,25 @@ import javax.validation.constraints.NotNull;
  */
 public class TemplatedMailConfiguration {
 
-    @Valid
-    @NotNull
-    @JsonProperty
-    private TemplatedMailKestrelConfiguration kestrel = new TemplatedMailKestrelConfiguration();
-    public TemplatedMailKestrelConfiguration getKestrel() { return kestrel; }
-    public void setKestrel(TemplatedMailKestrelConfiguration kestrel) { this.kestrel = kestrel; }
+    @Valid @NotNull @JsonProperty
+    @Getter @Setter private TemplatedMailKestrelConfiguration kestrel = new TemplatedMailKestrelConfiguration();
 
-    @NotNull
-    @JsonProperty
-    private String queueName;
-    public String getQueueName() { return queueName; }
-    public void setQueueName(String queueName) { this.queueName = queueName; }
+    @NotNull @JsonProperty
+    @Getter @Setter private String queueName;
 
-    @NotNull
-    @JsonProperty
-    private String errorQueueName;
-    public String getErrorQueueName() { return errorQueueName; }
-    public void setErrorQueueName(String errorQueueName) { this.errorQueueName = errorQueueName; }
+    @NotNull @JsonProperty
+    @Getter @Setter private String errorQueueName;
 
-    @NotNull
-    @JsonProperty
-    private String emailTemplateBaseDir;
-    public String getEmailTemplateBaseDir() { return emailTemplateBaseDir; }
-    public void setEmailTemplateBaseDir(String emailTemplateBaseDir) { this.emailTemplateBaseDir = emailTemplateBaseDir; }
+    @NotNull @JsonProperty
+    @Getter @Setter private String emailTemplateBaseDir;
 
     @JsonProperty
-    private int numQueueConsumers = 0;
-    public int getNumQueueConsumers() { return numQueueConsumers; }
-    public void setNumQueueConsumers(int numQueueConsumers) { this.numQueueConsumers = numQueueConsumers; }
+    @Getter @Setter private int numQueueConsumers = 0;
 
-    @NotNull
-    @JsonProperty
-    private String mailSenderClass;
-    public String getMailSenderClass() { return mailSenderClass; }
-    public void setMailSenderClass(String mailSenderClass) { this.mailSenderClass = mailSenderClass; }
+    @NotNull @JsonProperty
+    @Getter @Setter private String mailSenderClass;
 
-    @NotNull
-    @JsonProperty
-    private MailConfig mailSenderConfig;
-    public MailConfig getMailSenderConfig() { return mailSenderConfig; }
-    public void setMailSenderConfig(MailConfig mailSenderConfig) { this.mailSenderConfig = mailSenderConfig; }
+    @NotNull @JsonProperty
+    @Getter @Setter private SmtpMailConfig mailSenderConfig = new SmtpMailConfig();
 
 }

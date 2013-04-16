@@ -1,12 +1,14 @@
 package org.cobbzilla.mail.sender;
 
-import org.cobbzilla.mail.MailConfig;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import net.fortuna.ical4j.model.Calendar;
+import org.apache.commons.mail.*;
 import org.cobbzilla.mail.MailSender;
 import org.cobbzilla.mail.SimpleEmailMessage;
 import org.cobbzilla.mail.ical.ICalEvent;
 import org.cobbzilla.mail.ical.ICalUtil;
-import net.fortuna.ical4j.model.Calendar;
-import org.apache.commons.mail.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,32 +18,27 @@ import java.io.IOException;
  * (c) Copyright 2013 Jonathan Cobb.
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
  */
+@NoArgsConstructor
 public class SmtpMailSender implements MailSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(SmtpMailSender.class);
 
-    private SmtpMailConfig mailConfig;
-
-    public SmtpMailSender () {}
+    @Getter @Setter private SmtpMailConfig config;
 
     public SmtpMailSender (SmtpMailConfig mailConfig) {
         setConfig(mailConfig);
-    }
-
-    public void setConfig(MailConfig mailConfig) {
-        this.mailConfig = new SmtpMailConfig(mailConfig);
     }
 
     @Override
     public void send(SimpleEmailMessage message) throws EmailException {
 
         Email email = constructEmail(message);
-        email.setHostName(mailConfig.getMailHost());
-        email.setSmtpPort(mailConfig.getMailPort());
-        if (mailConfig.getHasMailUser()) {
-            email.setAuthenticator(new DefaultAuthenticator(mailConfig.getMailUser(), mailConfig.getMailPassword()));
+        email.setHostName(config.getHost());
+        email.setSmtpPort(config.getPort());
+        if (config.getHasMailUser()) {
+            email.setAuthenticator(new DefaultAuthenticator(config.getUser(), config.getPassword()));
         }
-        email.setTLS(mailConfig.getTlsEnabled());
+        email.setTLS(config.isTlsEnabled());
         email.setSubject(message.getSubject());
         if (message.getToName() != null) {
             email.addTo(message.getToEmail(), message.getToName());

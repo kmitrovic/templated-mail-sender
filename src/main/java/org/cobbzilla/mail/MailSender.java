@@ -1,6 +1,7 @@
 package org.cobbzilla.mail;
 
 import org.apache.commons.mail.EmailException;
+import org.cobbzilla.mail.sender.SmtpMailConfig;
 
 /**
  * (c) Copyright 2013 Jonathan Cobb.
@@ -8,7 +9,7 @@ import org.apache.commons.mail.EmailException;
  */
 public interface MailSender {
 
-    public void setConfig(MailConfig mailConfig);
+    public void setConfig(SmtpMailConfig mailConfig);
 
     public void send(SimpleEmailMessage message) throws EmailException;
 

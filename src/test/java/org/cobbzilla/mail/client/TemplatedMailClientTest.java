@@ -3,15 +3,13 @@ package org.cobbzilla.mail.client;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.mail.EmailException;
 import org.cobbzilla.mail.*;
+import org.cobbzilla.mail.sender.SmtpMailConfig;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -141,7 +139,7 @@ public class TemplatedMailClientTest {
 
         public static final List<SimpleEmailMessage> messageList = new ArrayList<>();
 
-        @Override public void setConfig(MailConfig mailConfig) { /* noop */ }
+        @Override public void setConfig(SmtpMailConfig mailConfig) { /* noop */ }
 
         @Override
         public void send(SimpleEmailMessage message) throws EmailException {

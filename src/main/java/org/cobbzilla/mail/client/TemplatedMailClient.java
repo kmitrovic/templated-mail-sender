@@ -77,7 +77,7 @@ public class TemplatedMailClient {
         originalRunStack = new Exception("first called from thread " + Thread.currentThread().getName());
 
         if (numConsumers > 0) {
-            final TemplatedMailQueueListener queueListener = new TemplatedMailQueueListener(this.basePath, mailSender);
+            final TemplatedMailQueueListener queueListener = new TemplatedMailQueueListener(mailSender, basePath);
             for (int i=0; i<numConsumers; i++) {
                 getMqClient().registerConsumer(queueListener, this.queueName, this.errorQueueName);
             }

@@ -12,6 +12,7 @@
     <properties>
         <commons-email.version>1.2</commons-email.version>
         <javamail.version>1.4.5</javamail.version>
+        <activation.version>1.1.1</activation.version>
     </properties>
 
     <dependencies>
@@ -66,12 +67,22 @@
                     <groupId>javax.mail</groupId>
                     <artifactId>mail</artifactId>
                 </exclusion>
+                <!-- Exclude built-in javax.activation dependency (1.1) so we can use newer version -->
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
             <version>${javamail.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>${activation.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mnode.ical4j</groupId>
@@ -83,6 +94,14 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>1.4</version>
+        </dependency>
+
+        <!-- auto-generate java boilerplate -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>0.11.6</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

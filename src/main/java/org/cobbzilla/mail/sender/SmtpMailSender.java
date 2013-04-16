@@ -1,5 +1,6 @@
 package org.cobbzilla.mail.sender;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,16 +19,12 @@ import java.io.IOException;
  * (c) Copyright 2013 Jonathan Cobb.
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
  */
-@NoArgsConstructor
+@NoArgsConstructor @AllArgsConstructor
 public class SmtpMailSender implements MailSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(SmtpMailSender.class);
 
     @Getter @Setter private SmtpMailConfig config;
-
-    public SmtpMailSender (SmtpMailConfig mailConfig) {
-        setConfig(mailConfig);
-    }
 
     @Override
     public void send(SimpleEmailMessage message) throws EmailException {

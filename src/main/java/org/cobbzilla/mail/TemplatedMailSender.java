@@ -23,13 +23,13 @@ public class TemplatedMailSender {
     private static final String SCOPE_FROM_EMAIL = "fromEmail";
 
     // template suffixes
-    private static final String FROMEMAIL_SUFFIX = ".fromEmail";
-    private static final String FROMNAME_SUFFIX = ".fromName";
-    private static final String CC_SUFFIX = ".cc";
-    private static final String BCC_SUFFIX = ".bcc";
-    private static final String SUBJECT_SUFFIX = ".subject";
-    private static final String TEXT_SUFFIX = ".textMessage";
-    private static final String HTML_SUFFIX = ".htmlMessage";
+    public static final String FROMEMAIL_SUFFIX = ".fromEmail";
+    public static final String FROMNAME_SUFFIX = ".fromName";
+    public static final String CC_SUFFIX = ".cc";
+    public static final String BCC_SUFFIX = ".bcc";
+    public static final String SUBJECT_SUFFIX = ".subject";
+    public static final String TEXT_SUFFIX = ".textMessage";
+    public static final String HTML_SUFFIX = ".htmlMessage";
 
     private MailSender mailSender;
     private File fileRoot;

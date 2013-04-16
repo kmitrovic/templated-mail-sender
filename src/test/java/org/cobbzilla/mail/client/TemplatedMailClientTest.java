@@ -1,15 +1,12 @@
 package org.cobbzilla.mail.client;
 
-import com.yammer.dropwizard.config.Environment;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.mail.EmailException;
+import org.cobbzilla.mail.*;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.cobbzilla.mail.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,15 +15,12 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 /**
  * (c) Copyright 2013 Jonathan Cobb
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
  */
 public class TemplatedMailClientTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TemplatedMailClientTest.class);
 
     public static final String EMAIL_SUFFIX = "@example.com";
 
@@ -36,8 +30,6 @@ public class TemplatedMailClientTest {
 
     private static final long TIMEOUT = 1000 * 30; // 30 seconds
 
-    private static final Environment environment = mock(Environment.class);
-    private static final TemplatedMailService service = new TemplatedMailService();
     private static final TemplatedMailConfiguration configuration = new TemplatedMailConfiguration();
     private static TemplatedMailClient mailClient;
 
@@ -58,18 +50,14 @@ public class TemplatedMailClientTest {
         configuration.setEmailTemplateBaseDir(System.getProperty("user.dir") + "/src/test/resources");
         configuration.setNumQueueConsumers(1);
 
-        service.run(configuration, environment);
-        mailClient = service.getClient();
+        mailClient = new TemplatedMailClient(configuration);
+        mailClient.init();
     }
 
     @AfterClass
     public static void tearDownClass () throws Exception {
-        service.getClient().getMqClient().deleteQueue(TEST_QUEUE_NAME);
-        service.getClient().getMqClient().deleteQueue(TEST_ERROR_QUEUE_NAME);
-    }
-
-    private static byte[] getFlushCommand(String queueName) {
-        return ("flush " + queueName).getBytes();
+        mailClient.getMqClient().deleteQueue(TEST_QUEUE_NAME);
+        mailClient.getMqClient().deleteQueue(TEST_ERROR_QUEUE_NAME);
     }
 
     @Before

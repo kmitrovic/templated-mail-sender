@@ -1,7 +1,6 @@
 package org.cobbzilla.mail;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.yammer.dropwizard.config.Configuration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -10,7 +9,7 @@ import javax.validation.constraints.NotNull;
  * (c) Copyright 2013 Jonathan Cobb.
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
  */
-public class TemplatedMailConfiguration extends Configuration {
+public class TemplatedMailConfiguration {
 
     @Valid
     @NotNull

@@ -67,6 +67,9 @@ public class TemplatedMailClient {
     }
 
     public synchronized void init() throws Exception {
+        if (producer == null) {
+            producer = getMqClient().getProducer(queueName);
+        }
         if (_instance != null) {
             LOG.warn("TemplatedMailClient.init called more than once."
                     + ExceptionUtils.getFullStackTrace(originalRunStack) + "\n"
@@ -82,6 +85,5 @@ public class TemplatedMailClient {
                 getMqClient().registerConsumer(queueListener, this.queueName, this.errorQueueName);
             }
         }
-        producer = getMqClient().getProducer(queueName);
     }
 }

@@ -63,7 +63,7 @@ public class LocaleAwareMustacheFactory extends DefaultMustacheFactory {
         this.superFileRoot = fileRoot;
         this.suffixChecks = new ArrayList<>(4);
         StringBuilder suffix = new StringBuilder();
-        for (String localePart : locale.toLowerCase().split("_")) {
+        for (String localePart : locale.split("_")) {
             if (suffix.length() > 0) suffix.append('_');
             suffix.append(localePart);
             suffixChecks.add(0, suffix.toString());

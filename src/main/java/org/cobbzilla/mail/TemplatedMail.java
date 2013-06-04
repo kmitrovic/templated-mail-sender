@@ -1,5 +1,7 @@
 package org.cobbzilla.mail;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,33 +17,11 @@ public class TemplatedMail {
 
     private static final Logger LOG = LoggerFactory.getLogger(TemplatedMail.class);
 
-    @NotNull
-    @JsonProperty
-    private String templateName;
-    public String getTemplateName() { return templateName; }
-    public void setTemplateName(String templateName) { this.templateName = templateName; }
-
-    @JsonProperty
-    private String locale;
-    public String getLocale() { return locale; }
-    public void setLocale(String locale) { this.locale = locale; }
-
-    @JsonProperty
-    private String toName;
-    public String getToName() { return toName; }
-    public void setToName(String toName) { this.toName = toName; }
-
-    @NotNull
-    @JsonProperty
-    private String toEmail;
-    public String getToEmail() { return toEmail; }
-    public void setToEmail(String toEmail) { this.toEmail = toEmail; }
-
-    @NotNull
-    @JsonProperty
-    private Map<String, Object> parameters;
-    public Map<String, Object> getParameters() { return parameters; }
-    public void setParameters(Map<String, Object> parameters) { this.parameters = parameters; }
+    @NotNull @JsonProperty @Getter @Setter private String templateName;
+    @JsonProperty @Getter @Setter private String locale;
+    @JsonProperty @Getter @Setter private String toName;
+    @NotNull @JsonProperty @Getter @Setter private String toEmail;
+    @NotNull @JsonProperty @Getter @Setter private Map<String, Object> parameters;
 
     @Override
     public String toString() {

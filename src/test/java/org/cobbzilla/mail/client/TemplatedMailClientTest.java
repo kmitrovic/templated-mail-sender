@@ -75,7 +75,7 @@ public class TemplatedMailClientTest {
         parameters.put("aTokenToSubstitute", value);
         templatedMail.setParameters(parameters);
         templatedMail.setTemplateName("test_template/mail");
-        templatedMail.setLocale("en_us");
+        templatedMail.setLocale("en_US");
 
         mailClient.send(templatedMail);
 
@@ -112,7 +112,7 @@ public class TemplatedMailClientTest {
         templatedMail.setParameters(parameters);
 
         templatedMail.setTemplateName("complex_test_template/mail");
-        templatedMail.setLocale("en_us");
+        templatedMail.setLocale("en_US");
 
         mailClient.send(templatedMail);
 

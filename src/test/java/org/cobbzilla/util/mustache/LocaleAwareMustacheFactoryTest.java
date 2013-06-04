@@ -27,7 +27,7 @@ public class LocaleAwareMustacheFactoryTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(LocaleAwareMustacheFactoryTest.class);
 
-    public static final String LOCALE = "EN_US";
+    public static final String LOCALE = "en_US";
 
     private File fileRoot;
     private LocaleAwareMustacheFactory factory;

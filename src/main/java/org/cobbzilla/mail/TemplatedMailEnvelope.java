@@ -1,13 +1,10 @@
 package org.cobbzilla.mail;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectReader;
-import org.codehaus.jackson.map.ObjectWriter;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.cobbzilla.util.json.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,15 +20,10 @@ public class TemplatedMailEnvelope {
 
     public static final String TMAIL_EVENT_TYPE = "queue_tmail";
 
-    public static final ObjectMapper MAPPER = new ObjectMapper()
-            .configure(SerializationConfig.Feature.DEFAULT_VIEW_INCLUSION, false)
-            .configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
-
-    protected static final ObjectWriter jsonWriter = MAPPER.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL).writer();
-    protected static final ObjectReader jsonReader = MAPPER.reader(TemplatedMailEnvelope.class);
+    protected static final ObjectMapper jsonWriter = JsonUtil.NOTNULL_MAPPER;
 
     public String toJson () throws IOException { return jsonWriter.writeValueAsString(this); }
-    public static TemplatedMailEnvelope fromJson (String json) throws IOException { return jsonReader.readValue(json); }
+    public static TemplatedMailEnvelope fromJson (String json) throws Exception { return JsonUtil.fromJson(json, TemplatedMailEnvelope.class); }
 
     @JsonIgnore
     public boolean isValid() { return event != null && event.equals(TMAIL_EVENT_TYPE); }

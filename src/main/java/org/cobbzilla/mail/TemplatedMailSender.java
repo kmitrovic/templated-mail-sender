@@ -32,6 +32,10 @@ public class TemplatedMailSender {
     private File fileRoot;
 
     public void deliverMessage (TemplatedMail mail) throws Exception {
+        mailSender.send(prepareMessage(mail, fileRoot));
+    }
+
+    public static SimpleEmailMessage prepareMessage (TemplatedMail mail, File fileRoot) throws Exception {
 
         Map<String, Object> scope = mail.getParameters();
         if (scope == null) {
@@ -57,18 +61,18 @@ public class TemplatedMailSender {
         if (mail.getToName() != null) scope.put(SCOPE_TO_NAME, mail.getToName());
         scope.put(SCOPE_TO_EMAIL, mail.getToEmail());
 
-        final String subject = mustache.render(templateName + SUBJECT_SUFFIX, scope);
+        final String subject = renderSubject(scope, templateName, mustache);
         if (subject == null) {
             throw new IllegalArgumentException("No subject template could be mustache.rendered for template: "+templateName+" (locale="+mail.getLocale()+")");
         }
-        final String textBody = mustache.render(templateName+TEXT_SUFFIX, scope);
+        final String textBody = renderTextBody(scope, templateName, mustache);
         if (textBody == null) {
             throw new IllegalArgumentException("No text body template could be mustache.rendered for template: "+templateName+" (locale="+mail.getLocale()+")");
         }
 
         String htmlBody = null;
         try {
-            htmlBody = mustache.render(templateName+HTML_SUFFIX, scope);
+            htmlBody = renderHtmlBody(scope, templateName, mustache);
         } catch (UncheckedExecutionException e) {
             if (e.getCause() instanceof MustacheResourceNotFoundException) {
                 log.warn("No HTML email template found for resource: "+templateName);
@@ -87,8 +91,19 @@ public class TemplatedMailSender {
         emailMessage.setMessage(textBody);
         emailMessage.setHtmlMessage(htmlBody);
         emailMessage.setSubject(subject);
+        return emailMessage;
+    }
 
-        mailSender.send(emailMessage);
+    public static String renderSubject(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
+        return mustache.render(templateName + SUBJECT_SUFFIX, scope);
+    }
+
+    public static String renderTextBody(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
+        return mustache.render(templateName+TEXT_SUFFIX, scope);
+    }
+
+    public static String renderHtmlBody(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
+        return mustache.render(templateName+HTML_SUFFIX, scope);
     }
 
     protected String sanitizeMessage(Object message) {

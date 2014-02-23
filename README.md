@@ -96,7 +96,7 @@ expect to receive in the message.parameters that clients will send along with th
 
 ## Localizing an email template
 
-Simple create versions that include the localization string (use all lowercase), for example:
+Create versions that include the localization string (use all lowercase), for example:
 
     /home/tout/email_templates/foo/mail.textMessage_en_us.mustache
     /home/tout/email_templates/foo/mail.textMessage_fr_fr.mustache

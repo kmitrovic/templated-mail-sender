@@ -46,17 +46,19 @@ public class TemplatedMailSender {
         final String templateName = mail.getTemplateName();
         final LocaleAwareMustacheFactory mustache = LocaleAwareMustacheFactory.getFactory(fileRoot, mail.getLocale());
 
-        final String fromName = mustache.render(templateName + FROMNAME_SUFFIX, scope);
-        final String fromEmail = mustache.render(templateName + FROMEMAIL_SUFFIX, scope);
-        if (fromEmail == null) {
-            throw new IllegalArgumentException("No fromEmail template could be mustache.rendered for template: "+templateName);
+        if (!mail.hasFromEmail()) {
+            mail.setFromName(mustache.render(templateName + FROMNAME_SUFFIX, scope));
+            mail.setFromEmail(mustache.render(templateName + FROMEMAIL_SUFFIX, scope));
+            if (!mail.hasFromEmail()) {
+                throw new IllegalArgumentException("fromEmail not set and no fromEmail template could be mustache.rendered for template: " + templateName);
+            }
         }
         final String cc = mustache.render(templateName + CC_SUFFIX, scope);
         final String bcc = mustache.render(templateName + BCC_SUFFIX, scope);
 
         // we do not put "cc" and "bcc" into scope, as they should not be needed in the subject or textBody
-        if (fromName != null) scope.put(SCOPE_FROM_NAME, fromName);
-        scope.put(SCOPE_FROM_EMAIL, fromEmail);
+        if (mail.hasFromName()) scope.put(SCOPE_FROM_NAME, mail.getFromName());
+        scope.put(SCOPE_FROM_EMAIL, mail.getFromName());
 
         if (mail.getToName() != null) scope.put(SCOPE_TO_NAME, mail.getToName());
         scope.put(SCOPE_TO_EMAIL, mail.getToEmail());
@@ -82,8 +84,8 @@ public class TemplatedMailSender {
         }
 
         SimpleEmailMessage emailMessage = new SimpleEmailMessage();
-        emailMessage.setFromName(fromName);
-        emailMessage.setFromEmail(fromEmail);
+        emailMessage.setFromName(mail.getFromName());
+        emailMessage.setFromEmail(mail.getFromEmail());
         emailMessage.setToName(mail.getToName());
         emailMessage.setToEmail(mail.getToEmail());
         emailMessage.setCc(cc);

@@ -3,6 +3,7 @@ package org.cobbzilla.mail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.cobbzilla.util.string.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +25,14 @@ public class TemplatedMail {
     @JsonProperty @Getter @Setter private String locale;
     public TemplatedMail withLocale (String locale) { this.locale = locale; return this; }
 
+    @JsonProperty @Getter @Setter private String fromName;
+    public TemplatedMail withFromName (String fromName) { this.fromName = fromName; return this; }
+    public boolean hasFromName () { return !StringUtil.empty(fromName); }
+
+    @NotNull @JsonProperty @Getter @Setter private String fromEmail;
+    public TemplatedMail withFromEmail (String fromEmail) { this.fromEmail = fromEmail; return this; }
+    public boolean hasFromEmail () { return !StringUtil.empty(fromEmail); }
+
     @JsonProperty @Getter @Setter private String toName;
     public TemplatedMail withToName (String toName) { this.toName = toName; return this; }
 
@@ -44,6 +53,8 @@ public class TemplatedMail {
         return "TemplatedMail{" +
                 "templateName='" + templateName + '\'' +
                 ", locale='" + locale + '\'' +
+                ", fromName=" + fromName +
+                ", fromEmail=" + fromEmail +
                 ", toName=" + toName +
                 ", toEmail=" + toEmail +
                 ", parameters=" + parameters +

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.commons.mail.*;
 import org.cobbzilla.mail.MailSender;
@@ -19,7 +20,7 @@ import java.io.IOException;
  * (c) Copyright 2013 Jonathan Cobb.
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
  */
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor @AllArgsConstructor @Slf4j
 public class SmtpMailSender implements MailSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(SmtpMailSender.class);
@@ -57,8 +58,31 @@ public class SmtpMailSender implements MailSender {
         sendEmail_internal(email);
     }
 
+    public static final int MAX_TRIES = 5;
+
     protected void sendEmail_internal(Email email) throws EmailException {
-        email.send();
+        long wait = 5000;
+        for (int tries=0; tries < MAX_TRIES; tries++) {
+            try {
+                email.send();
+                return;
+
+            } catch (EmailException e) {
+                if (tries < MAX_TRIES) {
+                    log.warn("Error sending email (try #"+(tries+1)+", will retry): " + e);
+                    try {
+                        Thread.sleep(wait);
+                    } catch (InterruptedException e2) {
+                        log.warn("Interrupted waiting to send sending email (try #"+(tries+1)+", abandoning): " + e2);
+                    }
+                    wait *= 2;
+
+                } else {
+                    log.warn("Error sending email (try #"+tries+", abandoning): " + e);
+                    throw e;
+                }
+            }
+        }
     }
 
     private Email constructEmail(SimpleEmailMessage message) throws EmailException {

@@ -2,6 +2,7 @@ package org.cobbzilla.mail;
 
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.cobbzilla.util.mustache.LocaleAwareMustacheFactory;
 import org.cobbzilla.util.mustache.MustacheResourceNotFoundException;
@@ -28,8 +29,8 @@ public class TemplatedMailSender {
     public static final String TEXT_SUFFIX = ".textMessage";
     public static final String HTML_SUFFIX = ".htmlMessage";
 
-    private MailSender mailSender;
-    private File fileRoot;
+    @Getter protected MailSender mailSender;
+    @Getter protected File fileRoot;
 
     public void deliverMessage (TemplatedMail mail) throws Exception {
         mailSender.send(prepareMessage(mail, fileRoot));

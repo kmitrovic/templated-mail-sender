@@ -3,6 +3,9 @@ package org.cobbzilla.mail;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.cobbzilla.util.mustache.LocaleAwareMustacheFactory;
 import org.cobbzilla.util.mustache.MustacheResourceNotFoundException;
@@ -11,7 +14,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j @AllArgsConstructor
+@Slf4j @NoArgsConstructor @AllArgsConstructor @Accessors(chain=true)
 public class TemplatedMailSender {
 
     // things from the email to put into mustache scope, in addition to user-supplied parameters
@@ -29,8 +32,8 @@ public class TemplatedMailSender {
     public static final String TEXT_SUFFIX = ".textMessage";
     public static final String HTML_SUFFIX = ".htmlMessage";
 
-    @Getter protected MailSender mailSender;
-    @Getter protected File fileRoot;
+    @Getter @Setter protected MailSender mailSender;
+    @Getter @Setter protected File fileRoot;
 
     public void deliverMessage (TemplatedMail mail) throws Exception {
         mailSender.send(prepareMessage(mail, fileRoot));

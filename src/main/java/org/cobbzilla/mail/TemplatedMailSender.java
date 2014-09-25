@@ -51,14 +51,14 @@ public class TemplatedMailSender {
         final LocaleAwareMustacheFactory mustache = LocaleAwareMustacheFactory.getFactory(fileRoot, mail.getLocale());
 
         if (!mail.hasFromEmail()) {
-            mail.setFromName(mustache.render(templateName + FROMNAME_SUFFIX, scope));
-            mail.setFromEmail(mustache.render(templateName + FROMEMAIL_SUFFIX, scope));
+            mail.setFromName(render(mustache, templateName, scope, FROMNAME_SUFFIX));
+            mail.setFromEmail(render(mustache, templateName, scope, FROMEMAIL_SUFFIX));
             if (!mail.hasFromEmail()) {
                 throw new IllegalArgumentException("fromEmail not set and no fromEmail template could be mustache.rendered for template: " + templateName);
             }
         }
-        final String cc = mustache.render(templateName + CC_SUFFIX, scope);
-        final String bcc = mustache.render(templateName + BCC_SUFFIX, scope);
+        final String cc = render(mustache, templateName, scope, CC_SUFFIX);
+        final String bcc = render(mustache, templateName, scope, BCC_SUFFIX);
 
         // we do not put "cc" and "bcc" into scope, as they should not be needed in the subject or textBody
         if (mail.hasFromName()) scope.put(SCOPE_FROM_NAME, mail.getFromName());
@@ -100,16 +100,25 @@ public class TemplatedMailSender {
         return emailMessage;
     }
 
+    private static String render(LocaleAwareMustacheFactory mustache, String templateName, Map<String, Object> scope, String suffix) {
+        try {
+            return mustache.render(templateName + suffix, scope);
+        } catch (Exception e) {
+            log.warn("render error ("+templateName+suffix+"): "+e);
+            return null;
+        }
+    }
+
     public static String renderSubject(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
-        return mustache.render(templateName + SUBJECT_SUFFIX, scope);
+        return render(mustache, templateName, scope, SUBJECT_SUFFIX);
     }
 
     public static String renderTextBody(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
-        return mustache.render(templateName+TEXT_SUFFIX, scope);
+        return render(mustache, templateName, scope, TEXT_SUFFIX);
     }
 
     public static String renderHtmlBody(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
-        return mustache.render(templateName+HTML_SUFFIX, scope);
+        return render(mustache, templateName, scope, HTML_SUFFIX);
     }
 
     protected String sanitizeMessage(Object message) {

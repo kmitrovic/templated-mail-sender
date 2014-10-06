@@ -12,6 +12,8 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
 
     @Getter @Setter private List<TemplatedMail> messages = new ArrayList<>();
 
+    public TemplatedMail getFirstMessage () { return messages.get(0); }
+
     public int messageCount () { return messages.size(); }
     public void reset () { messages.clear(); }
     public TemplatedMail first() { return messages.isEmpty() ? null : messages.get(0); }

@@ -13,6 +13,7 @@ import java.io.File;
 public class TemplatedMailService {
 
     public static final String T_WELCOME = "welcome";
+    public static final String T_RESET_PASSWORD = "reset_password";
 
     public static final String PARAM_ACCOUNT = "account";
     public static final String PARAM_ADMIN = "admin";

@@ -36,7 +36,7 @@ public class TemplatedMailClientTest {
 
         final TemplatedMailKestrelConfiguration kestrelConfiguration = new TemplatedMailKestrelConfiguration();
         Map<String, String> props = new HashMap<>();
-        props.put("kestrelHosts", "kestrel:22133");
+        props.put("kestrelHosts", "localhost:22133");
         props.put("kestrelReconnectIntervalInMinutes", "20");
         props.put("kestrelConnectionPoolSize", "1");
         kestrelConfiguration.setProperties(props);

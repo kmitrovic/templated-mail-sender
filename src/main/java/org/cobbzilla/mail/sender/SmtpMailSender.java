@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import static org.cobbzilla.util.system.Sleep.sleep;
+
 /**
  * (c) Copyright 2013 Jonathan Cobb.
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -70,11 +72,7 @@ public class SmtpMailSender implements MailSender {
             } catch (EmailException e) {
                 if (tries < MAX_TRIES) {
                     log.warn("Error sending email (try #"+(tries+1)+", will retry): " + e);
-                    try {
-                        Thread.sleep(wait);
-                    } catch (InterruptedException e2) {
-                        log.warn("Interrupted waiting to send sending email (try #"+(tries+1)+", abandoning): " + e2);
-                    }
+                    sleep(wait, "waiting to send sending email (try #" + (tries + 1) + ", abandoning)");
                     wait *= 2;
 
                 } else {

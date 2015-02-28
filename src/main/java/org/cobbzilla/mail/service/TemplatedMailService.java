@@ -26,7 +26,7 @@ public class TemplatedMailService {
 
     protected TemplatedMailSender initMailSender() {
 
-        final SmtpMailConfig smtpMailConfig = configuration.getSmtpMailConfig();
+        final SmtpMailConfig smtpMailConfig = configuration.getSmtp();
         final File fileRoot = new File(configuration.getEmailTemplateRoot());
 
         return new TemplatedMailSender(new SmtpMailSender(smtpMailConfig), fileRoot);

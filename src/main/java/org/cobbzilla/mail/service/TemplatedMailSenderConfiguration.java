@@ -4,7 +4,7 @@ import org.cobbzilla.mail.sender.SmtpMailConfig;
 
 public interface TemplatedMailSenderConfiguration {
 
-    public SmtpMailConfig getSmtpMailConfig();
+    public SmtpMailConfig getSmtp();
 
     public String getEmailTemplateRoot();
 

@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 
+import static org.cobbzilla.util.daemon.ZillaRuntime.die;
+
 /**
  * (c) Copyright 2013 Jonathan Cobb.
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -69,7 +71,7 @@ public class ICalUtil {
             new CalendarOutputter().output(iCalendar, output);
             return output.toByteArray();
         } catch (Exception e) {
-            throw new IllegalStateException("can't convert calendar to bytes: "+e);
+            return die("can't convert calendar to bytes: "+e);
         }
     }
 }

@@ -6,6 +6,7 @@ import org.cobbzilla.util.mq.MqProducer;
 import org.cobbzilla.util.mq.kestrel.KestrelClient;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.cobbzilla.mail.*;
+import org.cobbzilla.util.reflect.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,7 @@ public class TemplatedMailClient {
         this.numConsumers = configuration.getNumQueueConsumers();
 
         try {
-            this.mailSender = (MailSender) Class.forName(configuration.getMailSenderClass()).newInstance();
+            this.mailSender = ReflectionUtil.instantiate(configuration.getMailSenderClass());
         } catch (Exception e) {
             throw new IllegalArgumentException("Error instantiating mail sender class: "+configuration.getMailSenderClass()+": "+e, e);
         }

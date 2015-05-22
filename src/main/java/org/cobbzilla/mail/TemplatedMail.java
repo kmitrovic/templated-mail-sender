@@ -4,13 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.cobbzilla.util.string.StringUtil;
+import org.cobbzilla.util.daemon.ZillaRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
 
 /**
  * (c) Copyright 2013 Jonathan Cobb.
@@ -25,10 +27,10 @@ public class TemplatedMail {
     @JsonProperty @Getter @Setter private String locale;
 
     @JsonProperty @Getter @Setter private String fromName;
-    public boolean hasFromName () { return !StringUtil.empty(fromName); }
+    public boolean hasFromName () { return !empty(fromName); }
 
     @NotNull @JsonProperty @Getter @Setter private String fromEmail;
-    public boolean hasFromEmail () { return !StringUtil.empty(fromEmail); }
+    public boolean hasFromEmail () { return !empty(fromEmail); }
 
     @JsonProperty @Getter @Setter private String toName;
     @NotNull @JsonProperty @Getter @Setter private String toEmail;

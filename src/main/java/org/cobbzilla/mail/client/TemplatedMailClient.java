@@ -1,11 +1,11 @@
 package org.cobbzilla.mail.client;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.cobbzilla.mail.*;
 import org.cobbzilla.util.mq.MqClient;
 import org.cobbzilla.util.mq.MqClientFactory;
 import org.cobbzilla.util.mq.MqProducer;
 import org.cobbzilla.util.mq.kestrel.KestrelClient;
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.cobbzilla.mail.*;
 import org.cobbzilla.util.reflect.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +73,8 @@ public class TemplatedMailClient {
         }
         if (_instance != null) {
             LOG.warn("TemplatedMailClient.init called more than once."
-                    + ExceptionUtils.getFullStackTrace(originalRunStack) + "\n"
-                    + ExceptionUtils.getFullStackTrace(new Exception("current call from thread " + Thread.currentThread().getName())));
+                    + ExceptionUtils.getStackTrace(originalRunStack) + "\n"
+                    + ExceptionUtils.getStackTrace(new Exception("current call from thread " + Thread.currentThread().getName())));
             return;
         }
         _instance = this;

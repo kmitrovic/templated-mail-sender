@@ -1,6 +1,6 @@
 package org.cobbzilla.mail.client;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.mail.EmailException;
 import org.cobbzilla.mail.*;
 import org.cobbzilla.mail.sender.SmtpMailConfig;
@@ -9,7 +9,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;

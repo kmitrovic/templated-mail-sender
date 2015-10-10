@@ -1,7 +1,6 @@
 package org.cobbzilla.mail.service;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.cobbzilla.mail.*;
 import org.cobbzilla.mail.sender.SmtpMailConfig;
 import org.cobbzilla.mail.sender.SmtpMailSender;
@@ -38,8 +37,10 @@ public class TemplatedMailService implements MailErrorHandler {
         getMailSender().deliverMessage(mail, successHandler, this);
     }
 
-    @Getter @Setter private RetryErrorHandler retryHandler = new RetryErrorHandler(true);
+    @Getter(lazy=true) private final RetryErrorHandler retryHandler = initRetryHandler();
+    private RetryErrorHandler initRetryHandler() { return new RetryErrorHandler(true); }
+
     @Override public void handleError(TemplatedMailSender mailSender, TemplatedMail mail, MailSuccessHandler successHandler, Exception e) {
-        retryHandler.handleError(mailSender, mail, successHandler, e);
+        getRetryHandler().handleError(mailSender, mail, successHandler, e);
     }
 }

@@ -2,6 +2,8 @@ package org.cobbzilla.mail.sender.mock;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.cobbzilla.mail.MailErrorHandler;
+import org.cobbzilla.mail.MailSuccessHandler;
 import org.cobbzilla.mail.TemplatedMail;
 import org.cobbzilla.mail.TemplatedMailSender;
 
@@ -20,4 +22,12 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
 
     @Override public void deliverMessage(TemplatedMail mail) throws Exception { messages.add(mail); }
 
+    @Override public void deliverMessage(TemplatedMail mail, MailSuccessHandler successHandler, MailErrorHandler errorHandler) {
+        try {
+            deliverMessage(mail);
+        } catch (Exception e) {
+            if (errorHandler != null) errorHandler.handleError(this, mail, successHandler, e);
+        }
+        if (successHandler != null) successHandler.handleSuccess(mail);
+    }
 }

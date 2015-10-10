@@ -14,6 +14,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.cobbzilla.util.daemon.ZillaRuntime.die;
+
 @Slf4j @NoArgsConstructor @AllArgsConstructor @Accessors(chain=true)
 public class TemplatedMailSender {
 
@@ -39,11 +41,18 @@ public class TemplatedMailSender {
         mailSender.send(prepareMessage(mail, fileRoot));
     }
 
-    public void deliverMessage (TemplatedMail mail, MailErrorHandler errorHandler) {
+    public void deliverMessage (TemplatedMail mail, MailSuccessHandler successHandler, MailErrorHandler errorHandler) {
         try {
             mailSender.send(prepareMessage(mail, fileRoot));
+            if (successHandler != null) {
+                try {
+                    successHandler.handleSuccess(mail);
+                } catch (Exception e) {
+                    die("Error calling successHandler (" + successHandler + "): " + e, e);
+                }
+            }
         } catch (Exception e) {
-            errorHandler.handleError(this, mail, e);
+            if (errorHandler != null) errorHandler.handleError(this, mail, successHandler, e);
         }
     }
 

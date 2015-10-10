@@ -14,8 +14,11 @@ public class RetryErrorHandler extends SimpleDaemon implements MailErrorHandler 
 
     private final List<BackloggedMessage> backlog = new ArrayList<>();
 
-    @Override public void handleError(TemplatedMailSender mailSender, TemplatedMail mail, Exception e) {
-        BackloggedMessage message = new BackloggedMessage(mailSender, mail);
+    @Override public void handleError(TemplatedMailSender mailSender,
+                                      TemplatedMail mail,
+                                      MailSuccessHandler successHandler,
+                                      Exception e) {
+        BackloggedMessage message = new BackloggedMessage(mailSender, successHandler, mail);
         addToBacklog(message);
     }
 
@@ -35,17 +38,32 @@ public class RetryErrorHandler extends SimpleDaemon implements MailErrorHandler 
             backlog.clear();
         }
         for (BackloggedMessage message : toProcess) {
-            if (!message.deliver()) addToBacklog(message);
+            if (message.deliver()) {
+                if (message.successHandler != null) {
+                    try {
+                        message.successHandler.handleSuccess(message.mail);
+                    } catch (Exception e) {
+                        // todo: airbrake this
+                        log.error("Error calling successHandler, giving up on message (" + message.successHandler + "): " + e, e);
+                    }
+                }
+            } else {
+                addToBacklog(message);
+            }
         }
     }
 
     private class BackloggedMessage {
         private TemplatedMailSender mailSender;
+        private MailSuccessHandler successHandler;
         private TemplatedMail mail;
         private long nextAttempt;
         private int attempts;
-        public BackloggedMessage(TemplatedMailSender mailSender, TemplatedMail mail) {
+        public BackloggedMessage(TemplatedMailSender mailSender,
+                                 MailSuccessHandler successHandler,
+                                 TemplatedMail mail) {
             this.mailSender = mailSender;
+            this.successHandler = successHandler;
             this.mail = mail;
             this.attempts = 1;
             this.nextAttempt = System.currentTimeMillis() + minAttemptInterval;

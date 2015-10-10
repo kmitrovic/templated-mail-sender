@@ -2,10 +2,7 @@ package org.cobbzilla.mail.service;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.cobbzilla.mail.MailErrorHandler;
-import org.cobbzilla.mail.RetryErrorHandler;
-import org.cobbzilla.mail.TemplatedMail;
-import org.cobbzilla.mail.TemplatedMailSender;
+import org.cobbzilla.mail.*;
 import org.cobbzilla.mail.sender.SmtpMailConfig;
 import org.cobbzilla.mail.sender.SmtpMailSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +33,13 @@ public class TemplatedMailService implements MailErrorHandler {
         return new TemplatedMailSender(new SmtpMailSender(smtpMailConfig), fileRoot);
     }
 
-    public void deliver (TemplatedMail mail) { getMailSender().deliverMessage(mail, this); }
+    public void deliver (TemplatedMail mail) { getMailSender().deliverMessage(mail, null, this); }
+    public void deliver (TemplatedMail mail, MailSuccessHandler successHandler) {
+        getMailSender().deliverMessage(mail, successHandler, this);
+    }
 
     @Getter @Setter private RetryErrorHandler retryHandler = new RetryErrorHandler();
-    @Override public void handleError(TemplatedMailSender mailSender, TemplatedMail mail, Exception e) {
-        retryHandler.handleError(mailSender, mail, e);
+    @Override public void handleError(TemplatedMailSender mailSender, TemplatedMail mail, MailSuccessHandler successHandler, Exception e) {
+        retryHandler.handleError(mailSender, mail, successHandler, e);
     }
 }

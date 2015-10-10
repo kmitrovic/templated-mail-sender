@@ -1,6 +1,8 @@
 package org.cobbzilla.mail.service;
 
 import lombok.Getter;
+import org.cobbzilla.mail.MailErrorHandler;
+import org.cobbzilla.mail.TemplatedMail;
 import org.cobbzilla.mail.TemplatedMailSender;
 import org.cobbzilla.mail.sender.SmtpMailConfig;
 import org.cobbzilla.mail.sender.SmtpMailSender;
@@ -30,6 +32,10 @@ public class TemplatedMailService {
         final File fileRoot = new File(configuration.getEmailTemplateRoot());
 
         return new TemplatedMailSender(new SmtpMailSender(smtpMailConfig), fileRoot);
+    }
+
+    public void deliver (TemplatedMail mail, MailErrorHandler errorHandler) {
+        getMailSender().deliverMessage(mail, errorHandler);
     }
 
 }

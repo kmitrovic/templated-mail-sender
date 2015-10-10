@@ -14,6 +14,8 @@ public class RetryErrorHandler extends SimpleDaemon implements MailErrorHandler 
 
     private final List<BackloggedMessage> backlog = new ArrayList<>();
 
+    public RetryErrorHandler(boolean now) { if (now) start(); }
+
     @Override public void handleError(TemplatedMailSender mailSender,
                                       TemplatedMail mail,
                                       MailSuccessHandler successHandler,

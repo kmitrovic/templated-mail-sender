@@ -38,7 +38,7 @@ public class TemplatedMailService implements MailErrorHandler {
         getMailSender().deliverMessage(mail, successHandler, this);
     }
 
-    @Getter @Setter private RetryErrorHandler retryHandler = new RetryErrorHandler();
+    @Getter @Setter private RetryErrorHandler retryHandler = new RetryErrorHandler(true);
     @Override public void handleError(TemplatedMailSender mailSender, TemplatedMail mail, MailSuccessHandler successHandler, Exception e) {
         retryHandler.handleError(mailSender, mail, successHandler, e);
     }

@@ -1,7 +1,9 @@
 package org.cobbzilla.mail.service;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.cobbzilla.mail.MailErrorHandler;
+import org.cobbzilla.mail.RetryErrorHandler;
 import org.cobbzilla.mail.TemplatedMail;
 import org.cobbzilla.mail.TemplatedMailSender;
 import org.cobbzilla.mail.sender.SmtpMailConfig;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 
 @Service
-public class TemplatedMailService {
+public class TemplatedMailService implements MailErrorHandler {
 
     public static final String T_WELCOME = "welcome";
     public static final String T_RESET_PASSWORD = "reset_password";
@@ -34,8 +36,10 @@ public class TemplatedMailService {
         return new TemplatedMailSender(new SmtpMailSender(smtpMailConfig), fileRoot);
     }
 
-    public void deliver (TemplatedMail mail, MailErrorHandler errorHandler) {
-        getMailSender().deliverMessage(mail, errorHandler);
-    }
+    public void deliver (TemplatedMail mail) { getMailSender().deliverMessage(mail, this); }
 
+    @Getter @Setter private RetryErrorHandler retryHandler = new RetryErrorHandler();
+    @Override public void handleError(TemplatedMailSender mailSender, TemplatedMail mail, Exception e) {
+        retryHandler.handleError(mailSender, mail, e);
+    }
 }

@@ -39,6 +39,14 @@ public class TemplatedMailSender {
         mailSender.send(prepareMessage(mail, fileRoot));
     }
 
+    public void deliverMessage (TemplatedMail mail, MailErrorHandler errorHandler) {
+        try {
+            mailSender.send(prepareMessage(mail, fileRoot));
+        } catch (Exception e) {
+            errorHandler.handleError(this, mail, e);
+        }
+    }
+
     public static SimpleEmailMessage prepareMessage (TemplatedMail mail, File fileRoot) throws Exception {
 
         Map<String, Object> scope = mail.getParameters();

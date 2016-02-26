@@ -6,12 +6,13 @@ import org.cobbzilla.util.mq.MqClient;
 import org.cobbzilla.util.mq.MqClientFactory;
 import org.cobbzilla.util.mq.MqProducer;
 import org.cobbzilla.util.mq.kestrel.KestrelClient;
-import org.cobbzilla.util.reflect.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Properties;
+
+import static org.cobbzilla.util.reflect.ReflectionUtil.instantiate;
 
 /**
  * (c) Copyright 2013 Jonathan Cobb.
@@ -44,7 +45,7 @@ public class TemplatedMailClient {
         this.numConsumers = configuration.getNumQueueConsumers();
 
         try {
-            this.mailSender = ReflectionUtil.instantiate(configuration.getMailSenderClass());
+            this.mailSender = instantiate(configuration.getMailSenderClass());
         } catch (Exception e) {
             throw new IllegalArgumentException("Error instantiating mail sender class: "+configuration.getMailSenderClass()+": "+e, e);
         }

@@ -16,6 +16,7 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.cobbzilla.util.daemon.ZillaRuntime.now;
 
 /**
  * (c) Copyright 2013 Jonathan Cobb
@@ -25,7 +26,7 @@ public class TemplatedMailClientTest {
 
     public static final String EMAIL_SUFFIX = "@example.com";
 
-    private static final String queueRandom = RandomStringUtils.randomAlphanumeric(5)+System.currentTimeMillis();
+    private static final String queueRandom = RandomStringUtils.randomAlphanumeric(5)+now();
     public static final String TEST_QUEUE_NAME = "tmt_"+queueRandom;
     public static final String TEST_ERROR_QUEUE_NAME = "tmt_"+queueRandom;
 
@@ -82,8 +83,8 @@ public class TemplatedMailClientTest {
 
         mailClient.send(templatedMail);
 
-        long start = System.currentTimeMillis();
-        while (MockMailSender.messageList.isEmpty() && System.currentTimeMillis() < start + TIMEOUT) {
+        long start = now();
+        while (MockMailSender.messageList.isEmpty() && now() < start + TIMEOUT) {
             synchronized (MockMailSender.messageList) {
                 MockMailSender.messageList.wait(100);
             }
@@ -119,8 +120,8 @@ public class TemplatedMailClientTest {
 
         mailClient.send(templatedMail);
 
-        long start = System.currentTimeMillis();
-        while (MockMailSender.messageList.isEmpty() && System.currentTimeMillis() < start + TIMEOUT) {
+        long start = now();
+        while (MockMailSender.messageList.isEmpty() && now() < start + TIMEOUT) {
             synchronized (MockMailSender.messageList) {
                 MockMailSender.messageList.wait(100);
             }

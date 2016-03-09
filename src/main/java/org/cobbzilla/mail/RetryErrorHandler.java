@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static org.cobbzilla.util.daemon.ZillaRuntime.now;
+
 @Slf4j
 public class RetryErrorHandler extends SimpleDaemon implements MailErrorHandler {
 
@@ -68,19 +70,19 @@ public class RetryErrorHandler extends SimpleDaemon implements MailErrorHandler 
             this.successHandler = successHandler;
             this.mail = mail;
             this.attempts = 1;
-            this.nextAttempt = System.currentTimeMillis() + minAttemptInterval;
+            this.nextAttempt = now() + minAttemptInterval;
         }
 
         public boolean deliver() {
             // when is the next attempt?
-            if (System.currentTimeMillis() < nextAttempt) return false;
+            if (now() < nextAttempt) return false;
             try {
                 mailSender.deliverMessage(mail);
                 return true;
 
             } catch (Exception e) {
                 attempts++;
-                nextAttempt = System.currentTimeMillis() + minAttemptInterval * attempts;
+                nextAttempt = now() + minAttemptInterval * attempts;
                 log.error("deliver: error on attempt #"+attempts+" ("+e+"), next attempt at "+DFORMAT.print(nextAttempt));
                 return false;
             }

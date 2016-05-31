@@ -8,29 +8,28 @@ import lombok.extern.slf4j.Slf4j;
 import net.fortuna.ical4j.model.Calendar;
 import org.apache.commons.mail.*;
 import org.cobbzilla.mail.MailSender;
+import org.cobbzilla.mail.SimpleEmailAttachment;
 import org.cobbzilla.mail.SimpleEmailMessage;
 import org.cobbzilla.mail.ical.ICalEvent;
 import org.cobbzilla.mail.ical.ICalUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.cobbzilla.util.string.Base64;
 
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import java.io.IOException;
 
 import static org.cobbzilla.util.system.Sleep.sleep;
 
 /**
- * (c) Copyright 2013 Jonathan Cobb.
+ * (c) Copyright 2013-2016 Jonathan Cobb.
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
  */
 @NoArgsConstructor @AllArgsConstructor @Slf4j
 public class SmtpMailSender implements MailSender {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SmtpMailSender.class);
-
     @Getter @Setter private SmtpMailConfig config;
 
-    @Override
-    public void send(SimpleEmailMessage message) throws EmailException {
+    @Override public void send(SimpleEmailMessage message) throws EmailException {
 
         Email email = constructEmail(message);
         email.setHostName(config.getHost());
@@ -84,10 +83,8 @@ public class SmtpMailSender implements MailSender {
     }
 
     private Email constructEmail(SimpleEmailMessage message) throws EmailException {
-        final Email email;
+        MultiPartEmail email = new MultiPartEmail();
         if (message instanceof ICalEvent) {
-            final MultiPartEmail multiPartEmail = new MultiPartEmail();
-
             ICalEvent iCalEvent = (ICalEvent) message;
 
             // Calendar iCalendar = new Calendar();
@@ -97,11 +94,10 @@ public class SmtpMailSender implements MailSender {
             String icsName = iCalEvent.getIcsName() + ".ics";
             String contentType = "text/calendar; icsName=\""+icsName+"\"";
             try {
-                multiPartEmail.attach(new ByteArrayDataSource(attachmentData, contentType), icsName, "", EmailAttachment.ATTACHMENT);
+                email.attach(new ByteArrayDataSource(attachmentData, contentType), icsName, "", EmailAttachment.ATTACHMENT);
             } catch (IOException e) {
                 throw new EmailException("constructEmail: couldn't attach: "+e, e);
             }
-            email = multiPartEmail;
 
         } else if (message.getHasHtmlMessage()) {
             final HtmlEmail htmlEmail = new HtmlEmail();
@@ -110,9 +106,26 @@ public class SmtpMailSender implements MailSender {
             email = htmlEmail;
 
         } else {
-            email = new SimpleEmail();
             email.setMsg(message.getMessage());
         }
+
+        if (message.hasAttachments()) {
+            for (SimpleEmailAttachment attachment : message.getAttachments()) {
+                try {
+                    final DataSource ds;
+                    if (attachment.hasFile()) {
+                        ds = new FileDataSource(attachment.getFile());
+                    } else {
+                        ds = new ByteArrayDataSource(Base64.decode(attachment.getBase64bytes()), attachment.getContentType());
+                    }
+                    email.attach(ds, attachment.getName(), attachment.getDescription());
+                } catch (IOException e) {
+                    throw new EmailException("Error decoding attachment: "+attachment.getName()+": "+e, e);
+                }
+
+            }
+        }
+
         return email;
     }
 }

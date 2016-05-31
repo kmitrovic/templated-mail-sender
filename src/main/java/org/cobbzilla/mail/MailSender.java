@@ -9,8 +9,8 @@ import org.cobbzilla.mail.sender.SmtpMailConfig;
  */
 public interface MailSender {
 
-    public void setConfig(SmtpMailConfig mailConfig);
+    void setConfig(SmtpMailConfig mailConfig);
 
-    public void send(SimpleEmailMessage message) throws EmailException;
+    void send(SimpleEmailMessage message) throws EmailException;
 
 }

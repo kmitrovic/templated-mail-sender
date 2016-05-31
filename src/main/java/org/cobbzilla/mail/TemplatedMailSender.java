@@ -114,6 +114,7 @@ public class TemplatedMailSender {
         emailMessage.setMessage(textBody);
         emailMessage.setHtmlMessage(htmlBody);
         emailMessage.setSubject(subject);
+        emailMessage.setAttachments(mail.getAttachments());
         return emailMessage;
     }
 

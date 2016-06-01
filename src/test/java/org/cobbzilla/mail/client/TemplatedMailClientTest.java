@@ -19,7 +19,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.cobbzilla.util.daemon.ZillaRuntime.now;
 
 /**
- * (c) Copyright 2013 Jonathan Cobb
+ * (c) Copyright 2013-2016 Jonathan Cobb
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
  */
 public class TemplatedMailClientTest {
@@ -35,8 +35,7 @@ public class TemplatedMailClientTest {
     private static final TemplatedMailConfiguration configuration = new TemplatedMailConfiguration();
     private static TemplatedMailClient mailClient;
 
-    @BeforeClass
-    public static void setUpClass () throws Exception {
+    @BeforeClass public static void setUpClass () throws Exception {
 
         final TemplatedMailKestrelConfiguration kestrelConfiguration = new TemplatedMailKestrelConfiguration();
         Map<String, String> props = new HashMap<>();
@@ -56,19 +55,16 @@ public class TemplatedMailClientTest {
         mailClient.init();
     }
 
-    @AfterClass
-    public static void tearDownClass () throws Exception {
+    @AfterClass public static void tearDownClass () throws Exception {
         mailClient.getMqClient().deleteQueue(TEST_QUEUE_NAME);
         mailClient.getMqClient().deleteQueue(TEST_ERROR_QUEUE_NAME);
     }
 
-    @Before
-    public void setUp () {
+    @Before public void setUp () {
         MockMailSender.messageList.clear();
     }
 
-    @Test
-    public void testBasic () throws Exception {
+    @Test public void testBasic () throws Exception {
         String random = RandomStringUtils.randomAlphanumeric(20);
 
         final TemplatedMail templatedMail = new TemplatedMail();
@@ -97,8 +93,7 @@ public class TemplatedMailClientTest {
         assertTrue("wrong subject (wrong template)", MockMailSender.messageList.get(0).getSubject().contains("en_us"));
     }
 
-    @Test
-    public void testComplexParameters () throws Exception {
+    @Test public void testComplexParameters () throws Exception {
         String random = RandomStringUtils.randomAlphanumeric(20);
 
         final TemplatedMail templatedMail = new TemplatedMail();
@@ -145,8 +140,7 @@ public class TemplatedMailClientTest {
 
         @Override public void setConfig(SmtpMailConfig mailConfig) { /* noop */ }
 
-        @Override
-        public void send(SimpleEmailMessage message) throws EmailException {
+        @Override public void send(SimpleEmailMessage message) throws EmailException {
             messageList.add(message);
             synchronized (messageList) {
                 messageList.notify();

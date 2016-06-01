@@ -30,4 +30,12 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
         }
         if (successHandler != null) successHandler.handleSuccess(mail);
     }
+
+    public List<TemplatedMail> inbox(String toEmail) {
+        final List<TemplatedMail> box = new ArrayList<>();
+        for (TemplatedMail message : messages) {
+            if (message.getToEmail().equals(toEmail)) box.add(message);
+        }
+        return box;
+    }
 }

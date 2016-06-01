@@ -31,6 +31,11 @@ public class SmtpMailSender implements MailSender {
 
     @Override public void send(SimpleEmailMessage message) throws EmailException {
 
+        if (message.getToEmail().endsWith("@example.com")) {
+            log.info("send: not sending message to "+message.getToEmail());
+            return;
+        }
+
         Email email = constructEmail(message);
         email.setHostName(config.getHost());
         email.setSmtpPort(config.getPort());

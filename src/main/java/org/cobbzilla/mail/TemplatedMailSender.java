@@ -1,5 +1,6 @@
 package org.cobbzilla.mail;
 
+import com.github.jknack.handlebars.Handlebars;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
+import org.cobbzilla.util.handlebars.HandlebarsUtil;
 import org.cobbzilla.util.mustache.LocaleAwareMustacheFactory;
 import org.cobbzilla.util.mustache.MustacheResourceNotFoundException;
 
@@ -56,7 +58,7 @@ public class TemplatedMailSender {
         }
     }
 
-    public static SimpleEmailMessage prepareMessage (TemplatedMail mail, File fileRoot) throws Exception {
+    public SimpleEmailMessage prepareMessage (TemplatedMail mail, File fileRoot) throws Exception {
 
         Map<String, Object> scope = mail.getParameters();
         if (scope == null) {
@@ -118,24 +120,30 @@ public class TemplatedMailSender {
         return emailMessage;
     }
 
-    private static String render(LocaleAwareMustacheFactory mustache, String templateName, Map<String, Object> scope, String suffix) {
+    private String render(LocaleAwareMustacheFactory mustache, String templateName, Map<String, Object> scope, String suffix) {
         try {
-            return mustache.render(templateName + suffix, scope);
+            String output = mustache.render(templateName + suffix, scope);
+            final Handlebars handlebars = getMailSender().getHandlebars();
+            if (handlebars != null && output.contains("{{") && output.contains("}}")) {
+                output = HandlebarsUtil.apply(handlebars, output, scope);
+            }
+            return output;
+
         } catch (Exception e) {
             log.warn("render error ("+templateName+suffix+"): "+e);
             return null;
         }
     }
 
-    public static String renderSubject(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
+    public String renderSubject(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
         return render(mustache, templateName, scope, SUBJECT_SUFFIX);
     }
 
-    public static String renderTextBody(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
+    public String renderTextBody(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
         return render(mustache, templateName, scope, TEXT_SUFFIX);
     }
 
-    public static String renderHtmlBody(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
+    public String renderHtmlBody(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
         return render(mustache, templateName, scope, HTML_SUFFIX);
     }
 

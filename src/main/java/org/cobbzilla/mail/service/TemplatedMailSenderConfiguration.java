@@ -1,11 +1,13 @@
 package org.cobbzilla.mail.service;
 
+import com.github.jknack.handlebars.Handlebars;
 import org.cobbzilla.mail.sender.SmtpMailConfig;
 
 public interface TemplatedMailSenderConfiguration {
 
-    public SmtpMailConfig getSmtp();
+    SmtpMailConfig getSmtp();
+    Handlebars getHandlebars();
 
-    public String getEmailTemplateRoot();
+    String getEmailTemplateRoot();
 
 }

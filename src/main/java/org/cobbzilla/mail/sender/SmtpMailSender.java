@@ -1,5 +1,6 @@
 package org.cobbzilla.mail.sender;
 
+import com.github.jknack.handlebars.Handlebars;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +29,9 @@ import static org.cobbzilla.util.system.Sleep.sleep;
 public class SmtpMailSender implements MailSender {
 
     @Getter @Setter private SmtpMailConfig config;
+    @Getter @Setter private Handlebars handlebars;
+
+    public SmtpMailSender (SmtpMailConfig config) { this.config = config; }
 
     @Override public void send(SimpleEmailMessage message) throws EmailException {
 

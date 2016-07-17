@@ -1,5 +1,6 @@
 package org.cobbzilla.mail.service;
 
+import com.github.jknack.handlebars.Handlebars;
 import lombok.Getter;
 import org.cobbzilla.mail.*;
 import org.cobbzilla.mail.sender.SmtpMailConfig;
@@ -27,9 +28,10 @@ public class TemplatedMailService implements MailErrorHandler {
     protected TemplatedMailSender initMailSender() {
 
         final SmtpMailConfig smtpMailConfig = configuration.getSmtp();
+        final Handlebars handlebars = configuration.getHandlebars();
         final File fileRoot = new File(configuration.getEmailTemplateRoot());
 
-        return new TemplatedMailSender(new SmtpMailSender(smtpMailConfig), fileRoot);
+        return new TemplatedMailSender(new SmtpMailSender(smtpMailConfig, handlebars), fileRoot);
     }
 
     public void deliver (TemplatedMail mail) { getMailSender().deliverMessage(mail, null, this); }

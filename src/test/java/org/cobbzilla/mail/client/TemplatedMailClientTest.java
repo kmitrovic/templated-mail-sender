@@ -1,5 +1,6 @@
 package org.cobbzilla.mail.client;
 
+import com.github.jknack.handlebars.Handlebars;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.mail.EmailException;
 import org.cobbzilla.mail.*;
@@ -139,6 +140,7 @@ public class TemplatedMailClientTest {
         public static final List<SimpleEmailMessage> messageList = new ArrayList<>();
 
         @Override public void setConfig(SmtpMailConfig mailConfig) { /* noop */ }
+        @Override public Handlebars getHandlebars() { return null; }
 
         @Override public void send(SimpleEmailMessage message) throws EmailException {
             messageList.add(message);

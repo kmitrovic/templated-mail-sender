@@ -53,6 +53,13 @@ public class TemplatedMail {
         return this;
     }
 
+    @Getter @Setter private List<SimpleEmailImage> images;
+    public TemplatedMail addImage (SimpleEmailImage image) {
+        if (images == null) images = new ArrayList<>();
+        images.add(image);
+        return this;
+    }
+
     @Override
     public String toString() {
         return "TemplatedMail{" +

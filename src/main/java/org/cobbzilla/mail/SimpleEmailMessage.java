@@ -25,6 +25,9 @@ public class SimpleEmailMessage {
     @Getter @Setter private String htmlMessage;
     @JsonIgnore public boolean getHasHtmlMessage() { return htmlMessage != null && htmlMessage.length() > 0; }
 
+    @Getter @Setter private List<SimpleEmailImage> images;
+    public boolean hasImages() { return !empty(images); }
+
     @Getter @Setter private List<SimpleEmailAttachment> attachments;
     public boolean hasAttachments() { return !empty(attachments); }
 
@@ -40,6 +43,7 @@ public class SimpleEmailMessage {
                 "\n subject='" + subject + "'" +
                 "\n message=" + ((message == null) ? "0" : message.length()) + " chars" +
                 "\n htmlMessage=" + (htmlMessage == null ? 0 : htmlMessage.length()) + " chars" +
+                "\n images=" + (images == null ? 0 : images.size()) +
                 "\n attachments=" + (attachments == null ? 0 : attachments.size()) +
                 "\n}";
     }

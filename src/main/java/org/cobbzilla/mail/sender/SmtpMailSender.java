@@ -10,6 +10,7 @@ import net.fortuna.ical4j.model.Calendar;
 import org.apache.commons.mail.*;
 import org.cobbzilla.mail.MailSender;
 import org.cobbzilla.mail.SimpleEmailAttachment;
+import org.cobbzilla.mail.SimpleEmailImage;
 import org.cobbzilla.mail.SimpleEmailMessage;
 import org.cobbzilla.mail.ical.ICalEvent;
 import org.cobbzilla.mail.ical.ICalUtil;
@@ -19,6 +20,7 @@ import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import java.io.IOException;
 
+import static org.cobbzilla.util.daemon.ZillaRuntime.notSupported;
 import static org.cobbzilla.util.system.Sleep.sleep;
 
 /**
@@ -110,6 +112,24 @@ public class SmtpMailSender implements MailSender {
 
         } else if (message.getHasHtmlMessage()) {
             final HtmlEmail htmlEmail = new HtmlEmail();
+            if (message.hasImages()) {
+                for (SimpleEmailImage image : message.getImages()) {
+                    switch (image.getIncludeType()) {
+                        case base64_embed:
+                        case url_embed:
+                            final String cid = htmlEmail.embed(image, image.getName());
+                            message.setHtmlMessage(message.getHtmlMessage().replaceAll("@IMAGE:"+image.getName(), "cid:"+cid));
+                            break;
+
+                        case url_link:
+                            message.setHtmlMessage(message.getHtmlMessage().replaceAll("@IMAGE:"+image.getName(), image.getUrl()));
+                            break;
+
+                        default:
+                            return notSupported("constructEmail - image "+image+" has unsupported includeType: "+image.getIncludeType());
+                    }
+                }
+            }
             htmlEmail.setTextMsg(message.getMessage());
             htmlEmail.setHtmlMsg(message.getHtmlMessage());
             email = htmlEmail;

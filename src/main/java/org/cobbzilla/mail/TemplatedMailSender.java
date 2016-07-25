@@ -140,7 +140,8 @@ public class TemplatedMailSender {
     }
 
     public String renderTextBody(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {
-        return render(mustache, templateName, scope, TEXT_SUFFIX);
+        final String rendered = render(mustache, templateName, scope, TEXT_SUFFIX);
+        return rendered == null ? null : rendered.replaceAll("&10;", "\n");
     }
 
     public String renderHtmlBody(Map<String, Object> scope, String templateName, LocaleAwareMustacheFactory mustache) {

@@ -40,6 +40,11 @@ public class TemplatedMail {
         this.parameters.put(name, value);
         return this;
     }
+    public TemplatedMail addParameters (Map<String, Object> params) {
+        if (this.parameters == null) this.parameters = new HashMap<>();
+        this.parameters.putAll(params);
+        return this;
+    }
 
     @Getter @Setter private List<SimpleEmailAttachment> attachments;
     public TemplatedMail addAttachment (SimpleEmailAttachment attachment) {

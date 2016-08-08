@@ -6,7 +6,7 @@ import org.cobbzilla.mail.MailErrorHandler;
 import org.cobbzilla.mail.MailSuccessHandler;
 import org.cobbzilla.mail.TemplatedMail;
 import org.cobbzilla.mail.TemplatedMailSender;
-import org.cobbzilla.util.collection.mappy.MappyConcurrentSortedSet;
+import org.cobbzilla.util.collection.mappy.MappyList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 public class MockTemplatedMailSender extends TemplatedMailSender {
 
-    @Getter protected final MappyConcurrentSortedSet<String, TemplatedMail> messages = new MappyConcurrentSortedSet<>();
+    @Getter protected final MappyList<String, TemplatedMail> messages = new MappyList<>();
 
     public TemplatedMail getFirstMessage () { return messages.entrySet().iterator().next().getValue(); }
 

@@ -1,14 +1,17 @@
 package org.cobbzilla.mail;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
 
@@ -17,9 +20,11 @@ import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
  */
 @Accessors(chain=true)
-public class TemplatedMail {
+@EqualsAndHashCode(of={"templateName", "locale", "fromName", "fromEmail", "toName", "toEmail", "parameters"})
+@ToString         (of={"templateName", "locale", "fromName", "fromEmail", "toName", "toEmail", "parameters"})
+public class TemplatedMail implements Comparable<TemplatedMail> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TemplatedMail.class);
+    @Override public int compareTo(TemplatedMail t) { return Integer.compare(hashCode(), t.hashCode()); }
 
     @NotNull @Getter @Setter private String templateName;
     @Getter @Setter private String locale;
@@ -60,16 +65,4 @@ public class TemplatedMail {
         return this;
     }
 
-    @Override
-    public String toString() {
-        return "TemplatedMail{" +
-                "templateName='" + templateName + '\'' +
-                ", locale='" + locale + '\'' +
-                ", fromName=" + fromName +
-                ", fromEmail=" + fromEmail +
-                ", toName=" + toName +
-                ", toEmail=" + toEmail +
-                ", parameters=" + parameters +
-                '}';
-    }
 }

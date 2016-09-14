@@ -25,6 +25,9 @@ public class SimpleEmailMessage {
     @Getter @Setter private String htmlMessage;
     @JsonIgnore public boolean getHasHtmlMessage() { return htmlMessage != null && htmlMessage.length() > 0; }
 
+    @JsonIgnore public String getTextContent () { return getMessage(); }
+    @JsonIgnore public String getHtmlContent () { return getHtmlMessage(); }
+
     @Getter @Setter private List<SimpleEmailImage> images;
     public boolean hasImages() { return !empty(images); }
 

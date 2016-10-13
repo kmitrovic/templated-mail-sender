@@ -39,4 +39,7 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
     public List<TemplatedMail> inbox(String toEmail) {
         return new ArrayList<>(messages.getAll(toEmail));
     }
+
+    @Override public String toString() { return messages.toString(); }
+
 }

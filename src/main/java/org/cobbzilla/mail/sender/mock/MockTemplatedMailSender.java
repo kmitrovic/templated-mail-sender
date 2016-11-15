@@ -36,9 +36,7 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
         if (successHandler != null) successHandler.handleSuccess(mail);
     }
 
-    public List<TemplatedMail> inbox(String toEmail) {
-        return new ArrayList<>(messages.getAll(toEmail));
-    }
+    public List<TemplatedMail> inbox(String toEmail) { return new ArrayList<>(messages.getAll(toEmail)); }
 
     @Override public String toString() { return messages.toString(); }
 

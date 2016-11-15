@@ -2,6 +2,8 @@ package org.cobbzilla.mail.service;
 
 import com.github.jknack.handlebars.Handlebars;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.cobbzilla.mail.*;
 import org.cobbzilla.mail.sender.SmtpMailConfig;
 import org.cobbzilla.mail.sender.SmtpMailSender;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 
-@Service
+@Service @Slf4j
 public class TemplatedMailService implements MailErrorHandler {
 
     public static final String T_WELCOME = "welcome";
@@ -34,9 +36,23 @@ public class TemplatedMailService implements MailErrorHandler {
         return new TemplatedMailSender(new SmtpMailSender(smtpMailConfig, handlebars), fileRoot);
     }
 
-    public void deliver (TemplatedMail mail) { getMailSender().deliverMessage(mail, null, this); }
+    public void deliver (TemplatedMail mail) {
+        if (checkDuplicate(mail)) return;
+        getMailSender().deliverMessage(mail, null, this);
+    }
     public void deliver (TemplatedMail mail, MailSuccessHandler successHandler) {
+        if (checkDuplicate(mail)) return;
         getMailSender().deliverMessage(mail, successHandler, this);
+    }
+
+    private final CircularFifoBuffer cache = new CircularFifoBuffer(100);
+    private boolean checkDuplicate(TemplatedMail mail) {
+        synchronized (cache) {
+            if (cache.contains(mail)) return true;
+            log.warn("checkDuplicate: not sending duplicate mail: "+mail);
+            cache.add(mail);
+        }
+        return false;
     }
 
     @Getter(lazy=true) private final RetryErrorHandler retryHandler = initRetryHandler();

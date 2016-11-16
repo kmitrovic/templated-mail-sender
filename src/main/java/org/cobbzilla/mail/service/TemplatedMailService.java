@@ -48,8 +48,10 @@ public class TemplatedMailService implements MailErrorHandler {
     private final CircularFifoBuffer cache = new CircularFifoBuffer(100);
     private boolean checkDuplicate(TemplatedMail mail) {
         synchronized (cache) {
-            if (cache.contains(mail)) return true;
-            log.warn("checkDuplicate: not sending duplicate mail: "+mail);
+            if (cache.contains(mail)) {
+                log.warn("checkDuplicate: not sending duplicate mail: "+mail);
+                return true;
+            }
             cache.add(mail);
         }
         return false;

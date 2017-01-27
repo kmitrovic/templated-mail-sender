@@ -15,6 +15,7 @@ import java.util.List;
 public class MockTemplatedMailSender extends TemplatedMailSender {
 
     @Getter protected final MappyList<String, TemplatedMail> messages = new MappyList<>();
+    @Getter private TemplatedMail mostRecent = null;
 
     public TemplatedMail getFirstMessage () { return messages.entrySet().iterator().next().getValue(); }
 
@@ -25,6 +26,7 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
     @Override public void deliverMessage(TemplatedMail mail) throws Exception {
         log.info(getClass().getSimpleName()+".deliverMessage: "+mail);
         messages.put(mail.getToEmail(), mail);
+        mostRecent = mail;
     }
 
     @Override public void deliverMessage(TemplatedMail mail, MailSuccessHandler successHandler, MailErrorHandler errorHandler) {

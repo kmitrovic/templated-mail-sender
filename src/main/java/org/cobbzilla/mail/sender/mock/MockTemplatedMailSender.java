@@ -1,5 +1,6 @@
 package org.cobbzilla.mail.sender.mock;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.cobbzilla.mail.MailErrorHandler;
@@ -11,11 +12,21 @@ import org.cobbzilla.util.collection.mappy.MappyList;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
+
 @Slf4j
 public class MockTemplatedMailSender extends TemplatedMailSender {
 
     @Getter protected final MappyList<String, TemplatedMail> messages = new MappyList<>();
     @Getter private TemplatedMail mostRecent = null;
+
+    public List<MockMailbox> getAll () {
+        final List<MockMailbox> all = new ArrayList<>();
+        for (String recipient : messages.keySet()) {
+            all.add(new MockMailbox(recipient, messages.getAll(recipient)));
+        }
+        return all;
+    }
 
     public TemplatedMail getFirstMessage () { return messages.entrySet().iterator().next().getValue(); }
 
@@ -42,4 +53,11 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
 
     @Override public String toString() { return messages.toString(); }
 
+    @AllArgsConstructor
+    public static class MockMailbox {
+        @Getter private String recipient;
+        @Getter private List<TemplatedMail> mails;
+        public TemplatedMail getFirst() { return empty(mails) ? null : mails.get(0); }
+        public TemplatedMail getMostRecent() { return empty(mails) ? null : mails.get(mails.size()-1); }
+    }
 }

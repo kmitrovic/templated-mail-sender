@@ -21,8 +21,10 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
 
     public List<MockMailbox> getAll () {
         final List<MockMailbox> all = new ArrayList<>();
-        for (String recipient : messages.keySet()) {
-            all.add(new MockMailbox(recipient, messages.getAll(recipient)));
+        synchronized (messages) {
+            for (String recipient : messages.keySet()) {
+                all.add(new MockMailbox(recipient, messages.getAll(recipient)));
+            }
         }
         return all;
     }
@@ -35,7 +37,9 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
 
     @Override public void deliverMessage(TemplatedMail mail) throws Exception {
         log.info(getClass().getSimpleName()+".deliverMessage: "+mail);
-        messages.put(mail.getToEmail(), mail);
+        synchronized (messages) {
+            messages.put(mail.getToEmail(), mail);
+        }
     }
 
     @Override public void deliverMessage(TemplatedMail mail, MailSuccessHandler successHandler, MailErrorHandler errorHandler) {

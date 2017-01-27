@@ -18,7 +18,6 @@ import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
 public class MockTemplatedMailSender extends TemplatedMailSender {
 
     @Getter protected final MappyList<String, TemplatedMail> messages = new MappyList<>();
-    @Getter private TemplatedMail mostRecent = null;
 
     public List<MockMailbox> getAll () {
         final List<MockMailbox> all = new ArrayList<>();
@@ -37,7 +36,6 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
     @Override public void deliverMessage(TemplatedMail mail) throws Exception {
         log.info(getClass().getSimpleName()+".deliverMessage: "+mail);
         messages.put(mail.getToEmail(), mail);
-        mostRecent = mail;
     }
 
     @Override public void deliverMessage(TemplatedMail mail, MailSuccessHandler successHandler, MailErrorHandler errorHandler) {

@@ -39,7 +39,10 @@ public class TemplatedMail implements Comparable<TemplatedMail> {
     @NotNull @JsonProperty @Getter @Setter private String toEmail;
 
     @Getter @Setter private String cc;   // can be a comma-separated list of emails
+    public boolean hasCc () { return !empty(cc); }
+
     @Getter @Setter private String bcc;  // can be a comma-separated list of emails
+    public boolean hasBcc () { return !empty(bcc); }
 
     @NotNull @Getter @Setter private Map<String, Object> parameters;
 

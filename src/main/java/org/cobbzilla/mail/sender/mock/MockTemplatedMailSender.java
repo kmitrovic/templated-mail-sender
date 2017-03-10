@@ -8,6 +8,7 @@ import org.cobbzilla.mail.MailSuccessHandler;
 import org.cobbzilla.mail.TemplatedMail;
 import org.cobbzilla.mail.TemplatedMailSender;
 import org.cobbzilla.util.collection.mappy.MappyList;
+import org.cobbzilla.util.string.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,8 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
         log.info(getClass().getSimpleName()+".deliverMessage: "+mail);
         synchronized (messages) {
             messages.put(mail.getToEmail(), mail);
+            if (mail.hasBcc()) for (String b : StringUtil.split(mail.getBcc(), ", ")) messages.put(b, mail);
+            if (mail.hasCc()) for (String b : StringUtil.split(mail.getCc(), ", ")) messages.put(b, mail);
         }
     }
 

@@ -20,8 +20,8 @@ import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
  * This code is available under the Apache License, version 2: http://www.apache.org/licenses/LICENSE-2.0.html
  */
 @Accessors(chain=true)
-@EqualsAndHashCode(of={"templateName", "locale", "fromName", "fromEmail", "toName", "toEmail", "parameters"})
-@ToString         (of={"templateName", "locale", "fromName", "fromEmail", "toName", "toEmail", "parameters"})
+@EqualsAndHashCode(of={"templateName", "locale", "fromName", "fromEmail", "toName", "toEmail", "cc", "bcc", "parameters"})
+@ToString         (of={"templateName", "locale", "fromName", "fromEmail", "toName", "toEmail", "cc", "bcc", "parameters"})
 public class TemplatedMail implements Comparable<TemplatedMail> {
 
     @Override public int compareTo(TemplatedMail t) { return Integer.compare(hashCode(), t.hashCode()); }
@@ -37,6 +37,9 @@ public class TemplatedMail implements Comparable<TemplatedMail> {
 
     @Getter @Setter private String toName;
     @NotNull @JsonProperty @Getter @Setter private String toEmail;
+
+    @Getter @Setter private String cc;   // can be a comma-separated list of emails
+    @Getter @Setter private String bcc;  // can be a comma-separated list of emails
 
     @NotNull @Getter @Setter private Map<String, Object> parameters;
 

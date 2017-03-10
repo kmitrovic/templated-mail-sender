@@ -15,6 +15,7 @@ import org.cobbzilla.mail.SimpleEmailMessage;
 import org.cobbzilla.mail.ical.ICalEvent;
 import org.cobbzilla.mail.ical.ICalUtil;
 import org.cobbzilla.util.string.Base64;
+import org.cobbzilla.util.string.StringUtil;
 
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
@@ -42,7 +43,7 @@ public class SmtpMailSender implements MailSender {
             return;
         }
 
-        Email email = constructEmail(message);
+        final Email email = constructEmail(message);
         email.setHostName(config.getHost());
         email.setSmtpPort(config.getPort());
         if (config.getHasMailUser()) {
@@ -55,11 +56,21 @@ public class SmtpMailSender implements MailSender {
         } else {
             email.addTo(message.getToEmail());
         }
-        if (message.getBcc() != null) {
-            email.addBcc(message.getBcc());
+        final String bcc = message.getBcc();
+        if (bcc != null) {
+            if (bcc.contains(",")) {
+                for (String b : StringUtil.split(bcc, ", ")) email.addBcc(b);
+            } else {
+                email.addBcc(bcc);
+            }
         }
-        if (message.getCc() != null) {
-            email.addCc(message.getCc());
+        final String cc = message.getCc();
+        if (cc != null) {
+            if (cc.contains(",")) {
+                for (String c : StringUtil.split(cc, ", ")) email.addCc(c);
+            } else {
+                email.addCc(cc);
+            }
         }
         if (message.getFromName() != null) {
             email.setFrom(message.getFromEmail(), message.getFromName());

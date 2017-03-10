@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.cobbzilla.util.daemon.ZillaRuntime.die;
+import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
 
 @Slf4j @NoArgsConstructor @AllArgsConstructor @Accessors(chain=true)
 public class TemplatedMailSender {
@@ -26,6 +27,7 @@ public class TemplatedMailSender {
     private static final String SCOPE_TO_EMAIL = "toEmail";
     private static final String SCOPE_FROM_NAME = "fromName";
     private static final String SCOPE_FROM_EMAIL = "fromEmail";
+    private static final String SCOPE_BCC = "bcc";
 
     // template suffixes
     public static final String FROMEMAIL_SUFFIX = ".fromEmail";
@@ -76,8 +78,11 @@ public class TemplatedMailSender {
                 throw new IllegalArgumentException("fromEmail not set and no fromEmail template could be mustache.rendered for template: " + templateName);
             }
         }
-        final String cc = render(mustache, templateName, scope, CC_SUFFIX);
-        final String bcc = render(mustache, templateName, scope, BCC_SUFFIX);
+        String cc = render(mustache, templateName, scope, CC_SUFFIX);
+        if (!empty(mail.getCc())) cc = (cc == null ? "" : cc) + ", " + mail.getCc();
+
+        String bcc = render(mustache, templateName, scope, BCC_SUFFIX);
+        if (!empty(mail.getBcc())) bcc = (bcc == null ? "" : bcc) + ", " + mail.getBcc();
 
         // we do not put "cc" and "bcc" into scope, as they should not be needed in the subject or textBody
         if (mail.hasFromName()) scope.put(SCOPE_FROM_NAME, mail.getFromName());

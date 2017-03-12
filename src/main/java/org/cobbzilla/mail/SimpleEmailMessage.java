@@ -16,11 +16,18 @@ public class SimpleEmailMessage {
 
     @Getter @Setter private String fromName = null;
     @Getter @Setter private String fromEmail;
+
     @Getter @Setter private String toName;
     @Getter @Setter private String toEmail;
+
     @Getter @Setter private String cc;
+    public void addCc(String cc) { this.cc = empty(this.cc) ? cc : this.cc + "," + cc; }
+
     @Getter @Setter private String bcc;
+    public void addBcc(String bcc) { this.bcc = empty(this.bcc) ? bcc : this.bcc + "," + bcc; }
+
     @Getter @Setter private String subject;
+
     @Getter @Setter private String message;
     @Getter @Setter private String htmlMessage;
     @JsonIgnore public boolean getHasHtmlMessage() { return htmlMessage != null && htmlMessage.length() > 0; }

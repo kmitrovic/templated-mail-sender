@@ -8,10 +8,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
 
@@ -64,10 +61,10 @@ public class TemplatedMail implements Comparable<TemplatedMail> {
         return this;
     }
 
-    @Getter @Setter private List<SimpleEmailImage> images;
-    public TemplatedMail addImage (SimpleEmailImage image) {
-        if (images == null) images = new ArrayList<>();
-        images.add(image);
+    @Getter @Setter private List<SimpleEmailImage> images = new ArrayList<>();
+    public TemplatedMail addImages(List<SimpleEmailImage> images) {
+        if (images == null) return this;
+        this.images.addAll(images);
         return this;
     }
 

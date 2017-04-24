@@ -61,9 +61,10 @@ public class TemplatedMail implements Comparable<TemplatedMail> {
         return this;
     }
 
-    @Getter @Setter private List<SimpleEmailImage> images = new ArrayList<>();
+    @Getter @Setter private List<SimpleEmailImage> images;
     public TemplatedMail addImages(List<SimpleEmailImage> images) {
         if (images == null) return this;
+        if (this.images == null) this.images = new ArrayList<>();
         this.images.addAll(images);
         return this;
     }

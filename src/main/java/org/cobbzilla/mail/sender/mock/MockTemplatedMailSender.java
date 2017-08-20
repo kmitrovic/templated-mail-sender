@@ -53,7 +53,23 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
             messages.put(mail.getToEmail(), mail);
             if (mail.hasBcc()) for (String b : StringUtil.split(mail.getBcc(), ", ")) messages.put(b, mail);
             if (mail.hasCc()) for (String b : StringUtil.split(mail.getCc(), ", ")) messages.put(b, mail);
-            log.info(getClass().getSimpleName() + ".deliverMessage(" + mail.getToEmail() + "/" + ReflectionUtil.get(mail, "parameters.emailContent.name") + "/" + ReflectionUtil.get(mail, "parameters.productHold.holdType") + "): messages(" + System.identityHashCode(messages) + ") count now=" + messages.flatten().size());
+            log.info(getClass().getSimpleName() + ".deliverMessage(" + mail.getToEmail() + "/" + getEmailName(mail) + "/" + getEmailHoldType(mail) + "): messages(" + System.identityHashCode(messages) + ") count now=" + messages.flatten().size());
+        }
+    }
+
+    private String getEmailHoldType(TemplatedMail mail) {
+        try {
+            return (String) ReflectionUtil.get(mail, "parameters.productHold.holdType");
+        } catch (Exception e) {
+            return "no-hold-found";
+        }
+    }
+
+    private String getEmailName(TemplatedMail mail) {
+        try {
+            return (String) ReflectionUtil.get(mail, "parameters.emailContent.name");
+        } catch (Exception e) {
+            return mail.getTemplateName();
         }
     }
 
@@ -85,7 +101,7 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
                 if (m.getParameters().containsKey(EMAIL_CONTENT)) {
                     final Object content = m.getParameters().get(EMAIL_CONTENT);
                     if (ReflectionUtil.hasGetter(content, "name")) {
-                        msgBuilder.append(ReflectionUtil.get(content, "name")).append("/").append(ReflectionUtil.get(m, "parameters.productHold.holdType"));
+                        msgBuilder.append(ReflectionUtil.get(content, "name")).append("/").append(getEmailHoldType(m));
                     } else {
                         msgBuilder.append(content.toString());
                     }

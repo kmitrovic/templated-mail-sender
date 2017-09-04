@@ -46,6 +46,7 @@ public class SmtpMailSender implements MailSender {
         final Email email = constructEmail(message);
         email.setHostName(config.getHost());
         email.setSmtpPort(config.getPort());
+        email.setSSL(config.isSslEnabled());
         if (config.getHasMailUser()) {
             email.setAuthenticator(new DefaultAuthenticator(config.getUser(), config.getPassword()));
         }

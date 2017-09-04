@@ -16,6 +16,7 @@ public class SmtpMailConfig {
     @Getter @Setter private String user;
     @Getter @Setter private String password;
     @Getter @Setter private boolean tlsEnabled = false;
+    @Getter @Setter private boolean sslEnabled = false;
 
     public boolean getHasMailUser() { return getUser() != null; }
 

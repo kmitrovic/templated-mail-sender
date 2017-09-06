@@ -3,9 +3,7 @@ package org.cobbzilla.mail.fetch;
 import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import org.cobbzilla.mail.fetch.filter.MailboxSubjectFilter;
 import org.cobbzilla.util.collection.SingletonList;
-import org.cobbzilla.util.string.StringUtil;
 
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -22,6 +20,11 @@ public class MailboxChecker {
     public MailboxChecker (MailboxConfig config, MailboxFilter filter) {
         setMailbox(config);
         setFilters(new SingletonList<>(filter));
+    }
+
+    public MailboxChecker (MailboxConfig config, MailboxFilter[] filters) {
+        setMailbox(config);
+        setFilters(Arrays.asList(filters));
     }
 
     @Getter @Setter private MailboxConfig mailbox;

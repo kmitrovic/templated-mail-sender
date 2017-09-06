@@ -1,7 +1,6 @@
 package org.cobbzilla.mail.fetch;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import edu.emory.mathcs.backport.java.util.Collections;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +14,7 @@ import javax.mail.MessagingException;
 import javax.mail.Part;
 import javax.mail.internet.InternetAddress;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
@@ -29,7 +29,7 @@ public class MailboxMessage extends SimpleEmailMessage {
         this.additionalRecipients = empty(this.additionalRecipients) ? email : this.additionalRecipients + "," + email;
     }
     @JsonIgnore public List<String> getAdditionalRecipientsList () {
-        return empty(additionalRecipients) ? Collections.emptyList() : StringUtil.split(additionalRecipients, ",");
+        return empty(additionalRecipients) ? Collections.EMPTY_LIST : StringUtil.split(additionalRecipients, ",");
     }
 
     @Getter @Setter private String additionalSenders;
@@ -37,7 +37,7 @@ public class MailboxMessage extends SimpleEmailMessage {
         this.additionalSenders = empty(this.additionalSenders) ? email : this.additionalSenders + "," + email;
     }
     @JsonIgnore public List<String> getAdditionalSendersList () {
-        return empty(additionalSenders) ? Collections.emptyList() : StringUtil.split(additionalSenders, ",");
+        return empty(additionalSenders) ? Collections.EMPTY_LIST : StringUtil.split(additionalSenders, ",");
     }
 
     public MailboxMessage(Message message) throws IOException, MessagingException {

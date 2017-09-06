@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
@@ -40,6 +41,10 @@ public class SimpleEmailMessage {
 
     @Getter @Setter private List<SimpleEmailAttachment> attachments;
     public boolean hasAttachments() { return !empty(attachments); }
+    public void addAttachment (SimpleEmailAttachment a) {
+        if (attachments == null) attachments = new ArrayList<>();
+        attachments.add(a);
+    }
 
     @Override
     public String toString() {

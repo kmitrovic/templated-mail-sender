@@ -19,16 +19,6 @@ import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
 @NoArgsConstructor @AllArgsConstructor @Accessors(chain=true) @Slf4j
 public class MailboxChecker {
 
-    public static void main (String[] args) {
-        final MailboxConfig config = new MailboxConfig().setHost("");
-        config.setHost("smtp.gmail.com");
-        config.setUser("itekakotest");
-        config.setPassword("sifratest");
-        config.setPort(465);
-        final Collection<MailboxMessage> matched = new MailboxChecker(config, new MailboxSubjectFilter("IPFS cancellation")).checkMail();
-        System.out.println(StringUtil.toString(matched, "\n--------\n"));
-    }
-
     public MailboxChecker (MailboxConfig config, MailboxFilter filter) {
         setMailbox(config);
         setFilters(new SingletonList<>(filter));

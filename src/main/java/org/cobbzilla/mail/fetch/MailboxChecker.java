@@ -54,7 +54,7 @@ public class MailboxChecker {
                 // retrieve the messages from the folder in an array
                 final Message[] messages = emailFolder.getMessages();
                 for (int i = 0; i < messages.length; i++) {
-                    final MailboxMessage mail = new MailboxMessage(messages[i]);
+                    final MailboxMessage mail = new MailboxMessage(messages[i], getMailbox().getUser());
                     if (!matchedMessageIds.contains(mail.getMessageId())) {
                         if (filterMatch(mail, filters)) {
                             matches.add(mail);

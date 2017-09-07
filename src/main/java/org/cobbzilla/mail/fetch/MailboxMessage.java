@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.cobbzilla.mail.SimpleEmailMessage;
 import org.cobbzilla.util.string.StringUtil;
+import org.cobbzilla.util.string.ValidationRegexes;
 
 import javax.mail.Address;
 import javax.mail.Message;
@@ -40,7 +41,7 @@ public class MailboxMessage extends SimpleEmailMessage {
         return empty(additionalSenders) ? Collections.EMPTY_LIST : StringUtil.split(additionalSenders, ",");
     }
 
-    public MailboxMessage(Message message) throws IOException, MessagingException {
+    public MailboxMessage(Message message, String mailboxOwner) throws IOException, MessagingException {
         Address[] addrs;
 
         addrs = message.getRecipients(Message.RecipientType.BCC);
@@ -65,7 +66,7 @@ public class MailboxMessage extends SimpleEmailMessage {
         if (addrs != null) {
             for (Address a : addrs) {
                 if (getFromEmail() == null) {
-                    setFromEmail(extractEmail(a));
+                    setFromEmail(extractEmail(a, mailboxOwner));
                     setFromName(extractName(a));
                 } else {
                     addAdditionalSender(extractEmail(a));
@@ -85,6 +86,20 @@ public class MailboxMessage extends SimpleEmailMessage {
     }
 
     protected String extractEmail(Address a) {
+        return (a instanceof InternetAddress) ? ((InternetAddress) a).getAddress() : a.toString();
+    }
+
+    protected String extractEmail(Address a, String usePersonalIfEmailIsThis) {
+        final String found = extractEmail(a);
+        if (found.equals(usePersonalIfEmailIsThis)) {
+            final String shouldBeEmail = extractName(a);
+            if (empty(shouldBeEmail)) return found;
+            if (!ValidationRegexes.EMAIL_PATTERN.matcher(shouldBeEmail).matches()) {
+                log.warn("extractEmail ("+a+"): expected personal field to be proper email address, was "+shouldBeEmail);
+                return found;
+            }
+            return shouldBeEmail;
+        }
         return (a instanceof InternetAddress) ? ((InternetAddress) a).getAddress() : a.toString();
     }
 

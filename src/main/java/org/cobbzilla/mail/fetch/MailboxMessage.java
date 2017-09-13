@@ -9,11 +9,9 @@ import org.cobbzilla.mail.SimpleEmailMessage;
 import org.cobbzilla.util.string.StringUtil;
 import org.cobbzilla.util.string.ValidationRegexes;
 
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Part;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -119,6 +117,21 @@ public class MailboxMessage extends SimpleEmailMessage {
 
         } else if (contentType.contains("text/plain")) {
             safeSetMessage(bodyPart.getContent().toString());
+
+        } else if (bodyPart.getContent() instanceof MimeMultipart) {
+            final StringBuilder html = new StringBuilder();
+            final StringBuilder text = new StringBuilder();
+            final MimeMultipart mimeMultipart = (MimeMultipart) bodyPart.getContent();
+            for (int i=0; i<mimeMultipart.getCount(); i++) {
+                final BodyPart p = mimeMultipart.getBodyPart(i);
+                if (p.getContentType().toLowerCase().contains("text/plain")) {
+                    text.append(p.getContent());
+                } else {
+                    html.append(p.getContent());
+                }
+            }
+            safeSetMessage(text.toString());
+            safeSetHtmlMessage(html.toString());
 
         } else if (bodyPart.getFileName() != null) {
             addAttachment(new MailboxAttachment(bodyPart));

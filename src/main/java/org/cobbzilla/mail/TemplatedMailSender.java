@@ -111,7 +111,7 @@ public class TemplatedMailSender {
             }
         }
 
-        SimpleEmailMessage emailMessage = new SimpleEmailMessage();
+        final SimpleEmailMessage emailMessage = new SimpleEmailMessage();
         emailMessage.setFromName(mail.getFromName());
         emailMessage.setFromEmail(mail.getFromEmail());
         emailMessage.setToName(mail.getToName());

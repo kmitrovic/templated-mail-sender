@@ -84,6 +84,7 @@ public class RetryErrorHandler extends SimpleDaemon implements MailErrorHandler 
                 attempts++;
                 nextAttempt = now() + minAttemptInterval * attempts;
                 log.error("deliver: error on attempt #"+attempts+" ("+e+"), next attempt at "+DFORMAT.print(nextAttempt));
+                log.error("deliver error - cc ."+ mail.getCc()+".to."+mail.getToEmail()+".bcc."+mail.getBcc()+".from."+mail.getFromEmail());
                 return false;
             }
         }

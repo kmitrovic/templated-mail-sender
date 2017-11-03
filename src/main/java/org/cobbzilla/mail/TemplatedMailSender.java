@@ -79,10 +79,10 @@ public class TemplatedMailSender {
             }
         }
         String cc = render(mustache, templateName, scope, CC_SUFFIX);
-        if (!empty(mail.getCc())) cc = (cc == null ? "" : cc) + ", " + mail.getCc();
+        if (!empty(mail.getCc())) cc = (cc == null ? "" : cc + ", " )+ mail.getCc();
 
         String bcc = render(mustache, templateName, scope, BCC_SUFFIX);
-        if (!empty(mail.getBcc())) bcc = (bcc == null ? "" : bcc) + ", " + mail.getBcc();
+        if (!empty(mail.getBcc())) bcc = (bcc == null ? "" : bcc + ", ") + mail.getBcc();
 
         // we do not put "cc" and "bcc" into scope, as they should not be needed in the subject or textBody
         if (mail.hasFromName()) scope.put(SCOPE_FROM_NAME, mail.getFromName());

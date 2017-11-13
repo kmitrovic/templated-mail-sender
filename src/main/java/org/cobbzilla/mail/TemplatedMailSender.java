@@ -18,6 +18,8 @@ import java.util.Map;
 
 import static org.cobbzilla.util.daemon.ZillaRuntime.die;
 import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
+import static org.cobbzilla.util.handlebars.HandlebarsUtil.HB_END;
+import static org.cobbzilla.util.handlebars.HandlebarsUtil.HB_START;
 
 @Slf4j @NoArgsConstructor @AllArgsConstructor @Accessors(chain=true)
 public class TemplatedMailSender {
@@ -130,7 +132,7 @@ public class TemplatedMailSender {
         try {
             String output = mustache.render(templateName + suffix, scope);
             final Handlebars handlebars = getMailSender().getHandlebars();
-            if (handlebars != null && output.contains("{{") && output.contains("}}")) {
+            if (handlebars != null && output.contains(HB_START) && output.contains(HB_END)) {
                 output = HandlebarsUtil.apply(handlebars, output, scope);
             }
             return output;

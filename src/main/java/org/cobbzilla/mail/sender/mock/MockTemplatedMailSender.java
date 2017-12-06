@@ -50,9 +50,9 @@ public class MockTemplatedMailSender extends TemplatedMailSender {
         if (mail.getParameters().get("__debug") != null) return;
         synchronized (messagesRef) {
             final MappyList<String, TemplatedMail> messages = getMessages();
-            messages.put(mail.getToEmail(), mail);
-            if (mail.hasBcc()) for (String b : StringUtil.split(mail.getBcc(), ", ")) messages.put(b, mail);
-            if (mail.hasCc()) for (String b : StringUtil.split(mail.getCc(), ", ")) messages.put(b, mail);
+            for (String b : StringUtil.split(mail.getToEmail(), ",")) messages.put(b.trim(), mail);
+            if (mail.hasBcc()) for (String b : StringUtil.split(mail.getBcc(), ",")) messages.put(b.trim(), mail);
+            if (mail.hasCc()) for (String b : StringUtil.split(mail.getCc(), ",")) messages.put(b.trim(), mail);
             log.info(getClass().getSimpleName() + ".deliverMessage(" + mail.getToEmail() + "/" + getEmailName(mail) + "/" + getEmailHoldType(mail) + "): messages(" + System.identityHashCode(messages) + ") count now=" + messages.flatten().size());
         }
     }

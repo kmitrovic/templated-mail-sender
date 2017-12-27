@@ -20,7 +20,10 @@ import org.cobbzilla.util.string.StringUtil;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.cobbzilla.util.daemon.ZillaRuntime.empty;
 import static org.cobbzilla.util.daemon.ZillaRuntime.notSupported;
 import static org.cobbzilla.util.system.Sleep.sleep;
 
@@ -37,9 +40,9 @@ public class SmtpMailSender implements MailSender {
     public SmtpMailSender (SmtpMailConfig config) { this.config = config; }
 
     @Override public void send(SimpleEmailMessage message) throws EmailException {
-
-        if (message.getToEmail().endsWith("@example.com")) {
-            log.info("send: not sending message to "+message.getToEmail());
+        List<String> addresses = splitTrimAndFilterMailAddresses(message.getToEmail());
+        if (empty(addresses)) {
+            log.info("send: not sending message to " + message.getToEmail());
             return;
         }
 
@@ -52,27 +55,22 @@ public class SmtpMailSender implements MailSender {
         }
         email.setTLS(config.isTlsEnabled());
         email.setSubject(message.getSubject());
-        if (message.getToName() != null) {
-            email.addTo(message.getToEmail(), message.getToName());
+
+        if (message.getToName() != null && addresses.size() == 1) {
+            email.addTo(addresses.get(0), message.getToName());
         } else {
-            email.addTo(message.getToEmail());
-        }
-        final String bcc = message.getBcc();
-        if (bcc != null) {
-            if (bcc.contains(",")) {
-                for (String b : StringUtil.split(bcc, ", ")) email.addBcc(b);
-            } else {
-                email.addBcc(bcc);
+            if (message.getToName() != null) {
+                log.warn("send: email with toName, but with multiple comma separated toEmail-s. Leaving toName blank.");
             }
+            for (String a : addresses) email.addTo(a);
         }
-        final String cc = message.getCc();
-        if (cc != null) {
-            if (cc.contains(",")) {
-                for (String c : StringUtil.split(cc, ", ")) email.addCc(c);
-            } else {
-                email.addCc(cc);
-            }
-        }
+
+        addresses = splitTrimAndFilterMailAddresses(message.getBcc());
+        if (!empty(addresses)) for (String a : addresses) email.addBcc(a);
+
+        addresses = splitTrimAndFilterMailAddresses(message.getCc());
+        if (!empty(addresses)) for (String a : addresses) email.addCc(a);
+
         if (message.getFromName() != null) {
             email.setFrom(message.getFromEmail(), message.getFromName());
         } else {
@@ -80,6 +78,22 @@ public class SmtpMailSender implements MailSender {
         }
 
         sendEmail_internal(email);
+    }
+
+    protected List<String> splitTrimAndFilterMailAddresses(String addresses) {
+        if (addresses == null) return null;
+
+        List<String> result = new ArrayList<>();
+        if (addresses.contains(",")) {
+            for (String a : StringUtil.split(addresses, ",")) {
+                a = a.trim();
+                if (!a.endsWith("@example.com")) result.add(a);
+            }
+        } else {
+            addresses = addresses.trim();
+            if (!addresses.endsWith("@example.com")) result.add(addresses);
+        }
+        return result;
     }
 
     public static final int MAX_TRIES = 5;

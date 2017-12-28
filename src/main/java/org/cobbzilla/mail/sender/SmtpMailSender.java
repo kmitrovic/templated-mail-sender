@@ -33,6 +33,13 @@ import static org.cobbzilla.util.system.Sleep.sleep;
  */
 @NoArgsConstructor @AllArgsConstructor @Slf4j
 public class SmtpMailSender implements MailSender {
+    private static final List<String> TEST_DOMAINS = new ArrayList<String>() {{
+        add("@example.com"); add(".example.com"); add("@example.net"); add(".example.net");
+        add("@example.org"); add(".example.org"); add("@example.edu"); add(".example.edu");
+        add("@localhost"); add(".localhost");
+        add(".example"); add(".invalid"); add(".local"); add(".test");
+    }};
+
 
     @Getter @Setter private SmtpMailConfig config;
     @Getter @Setter private Handlebars handlebars;
@@ -80,20 +87,27 @@ public class SmtpMailSender implements MailSender {
         sendEmail_internal(email);
     }
 
-    protected List<String> splitTrimAndFilterMailAddresses(String addresses) {
+    private List<String> splitTrimAndFilterMailAddresses(String addresses) {
         if (addresses == null) return null;
 
         List<String> result = new ArrayList<>();
         if (addresses.contains(",")) {
             for (String a : StringUtil.split(addresses, ",")) {
                 a = a.trim();
-                if (!a.endsWith("@example.com")) result.add(a);
+                if (isValidEmailDomain(a)) result.add(a);
             }
         } else {
             addresses = addresses.trim();
-            if (!addresses.endsWith("@example.com")) result.add(addresses);
+            if (isValidEmailDomain(addresses)) result.add(addresses);
         }
         return result;
+    }
+
+    private boolean isValidEmailDomain(final String emailAddress) {
+        for (String testDomain : TEST_DOMAINS) {
+            if (emailAddress.endsWith(testDomain)) return false;
+        }
+        return true;
     }
 
     public static final int MAX_TRIES = 5;
